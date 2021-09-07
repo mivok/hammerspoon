@@ -10,11 +10,14 @@ local windowmanage = require("windowmanage")
 local zoom_detect = require("zoom_detect")
 
 ---- Automatically reload the config ----
-pw1 = hs.pathwatcher.new(os.getenv("HOME") ..
-    "/.hammerspoon/", hs.reload):start()
--- I manage my dotfiles in a different dir and symlink to ~/.hammerspoon
-pw2 = hs.pathwatcher.new(os.getenv("HOME") ..
-    ".dotfiles/dotfiles-laptop/home/.hammerspoon/", hs.reload):start()
+pw1 = hs.pathwatcher.new(hs.configdir, function(paths, flags)
+  for idx, path in ipairs(paths) do
+    if string.find(path, "%.lua$") then
+      hs.reload()
+      break
+    end
+  end
+end):start()
 hs.notify.show("Hammerspoon",  "", "config loaded", "")
 
 -- Force garbage collection early to quickly detect any issues caused by use
