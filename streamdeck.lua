@@ -1,7 +1,8 @@
 -- Make sure hotkey functions are loaded so we can refer to them as streamdeck
 -- callbacks
-local actions = require("actions")
 local images = require("streamdeck/images")
+local actions = require("actions")
+local zoom_actions = require("zoom_actions")
 
 -- Callback for use as a streamdeck key callback
 function streamdeck_changeLayerCallback(layer)
@@ -53,13 +54,16 @@ local layers = {
     {
       image = images.imageWithLabel('shush.png', 'Shush', {
         scale = 0.75, yoffset = 10}),
-      press_callback = function() hs.eventtap.event.newKeyEvent("F13", true):post() end,
-      release_callback = function() hs.eventtap.event.newKeyEvent("F13", false):post() end,
+      press_callback = actions.keydown("F13"),
+      release_callback = actions.keyup("F13"),
     },
     {},
     {},
     {},
-    {},
+    {
+      image = images.imageFromText("🔒", "", {yoffset=0}),
+      press_callback = actions.sleep_screen,
+    },
   },
 
   -- Layer 2
@@ -93,15 +97,24 @@ local layers = {
   zoom = {
     -- Row 1
     {},
+    {passthrough = 'default'}, -- Mic volume reset
     {},
-    {},
-    {},
-    {},
+    {
+      image = images.imageFromText(".", "Participants"),
+      press_callback = zoom_actions.show_participants,
+    },
+    {
+      image = images.imageFromText(".", "Chat"),
+      press_callback = zoom_actions.show_chat,
+    },
     -- Row 2
-    {},
-    {},
-    {},
-    {},
+    {passthrough = 'default'}, -- Headset
+    {passthrough = 'default'}, -- Speaker
+    {passthrough = 'default'}, -- Laptop
+    {
+      image = images.imageFromText(".", "Share Pause"),
+      press_callback = zoom_actions.share_pause,
+    },
     {
       image = images.imageFromText("<", "Back"),
       press_callback = streamdeck_changeLayerCallback('default')
@@ -111,10 +124,22 @@ local layers = {
       -- Shush
       passthrough = 'default'
     },
-    {},
-    {},
-    {},
-    {},
+    {
+      image = images.imageFromText("M", "Mute"),
+      press_callback = zoom_actions.audio_toggle,
+    },
+    {
+      image = images.imageFromText("C", "Camera"),
+      press_callback = zoom_actions.camera_toggle,
+    },
+    {
+      image = images.imageFromText("S", "Share"),
+      press_callback = zoom_actions.share_toggle,
+    },
+    {
+      image = images.imageFromText("X", "Leave"),
+      press_callback = zoom_actions.leave_meeting_no_prompt,
+    },
   },
   -- Layer N - Blank template layer
   blank = {
