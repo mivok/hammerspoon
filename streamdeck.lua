@@ -73,7 +73,10 @@ local layers = {
   -- Layer 2 - Extras
   layer2 = {
     -- Row 1
-    {},
+    {
+      image = images.imageFromText("A", "AWS Login"),
+      press_callback = actions.saml2aws_login,
+    },
     {},
     {},
     {},

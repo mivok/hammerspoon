@@ -117,4 +117,20 @@ function actions.toggle_application(bundleID)
   end
 end
 
+function actions.saml2aws_login()
+  hs.task.new('/usr/local/bin/saml2aws', function(exitcode, stdout, stderr)
+    local msg = {"saml2aws login"}
+    if exitcode ~= 0 then
+      table.insert(msg, "ERROR: exit code " .. exitcode)
+    end
+    if stdout ~= "" then
+      table.insert(msg, (stdout:gsub("^%s*(.-)%s*$", "%1")))
+    end
+    if stderr ~= "" then
+      table.insert(msg, (stderr:gsub("^%s*(.-)%s*$", "%1")))
+    end
+    hs.alert.show(table.concat(msg, "\n\n"), {textFont = 'Menlo'}, hs.screen.mainScreen(), 10)
+  end, {'login', '--skip-prompt'}):start()
+end
+
 return actions
