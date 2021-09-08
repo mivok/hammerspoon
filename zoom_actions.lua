@@ -18,6 +18,23 @@ function zoom_actions.select_menu_items(items)
   return false
 end
 
+function zoom_actions.activate_zoom_window()
+  local app = hs.application.find("zoom.us")
+  local windowTitles = {"Zoom Meeting", "Zoom Webinar"}
+  if app then
+    if not app:isFrontmost() then
+      app:activate()
+    end
+    for _, title in ipairs(windowTitles) do
+      local window = app:findWindow(title)
+      if window then
+        window:focus()
+        break
+      end
+    end
+  end
+end
+
 function zoom_actions.audio_toggle()
   zoom_actions.select_menu_items({"Mute Audio", "Unmute Audio"})
 end
@@ -53,6 +70,9 @@ end
 -- Leave a meeting and automatically confirm the prompt
 -- Note: this may end the meeting for all
 function zoom_actions.leave_meeting_no_prompt()
+  -- Make sure the zoom window is active and that we aren't sharing the screen
+  zoom_actions.select_menu_items({"Stop Share"})
+  zoom_actions.activate_zoom_window()
   -- Click close, wait a bit, then press Enter to confirm
   if zoom_actions.select_menu_items({{"Window", "Close"}}) then
     hs.timer.doAfter(0.5, function()
