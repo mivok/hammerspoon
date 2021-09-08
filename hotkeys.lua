@@ -88,6 +88,14 @@ function hotkey_audio_speaker()
     )
 end
 
+function hotkey_audio_laptop()
+    -- Switch audio to speakers
+    switch_default_audio_devices(
+        "MacBook Pro Speakers",
+        "MacBook Pro Microphone"
+    )
+end
+
 -- Normal hotkeys
 hs.hotkey.bind({"cmd", "alt"}, "L", hotkey_sleep_screen)
 
