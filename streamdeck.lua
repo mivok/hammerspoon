@@ -5,11 +5,21 @@ local images = require("streamdeck/images")
 local actions = require("actions")
 local zoom_actions = require("zoom_actions")
 
+function app_button(bundleID)
+  return {
+    image = hs.image.imageFromAppBundle(bundleID),
+    press_callback = actions.toggle_application(bundleID),
+  }
+end
+
 local layers = {
   -- Layer 1 - Main layer
   default = {
     -- Row 1
-    { },
+    {
+      image = images.imageFromText("🔒", "", {yoffset=0}),
+      press_callback = actions.sleep_screen,
+    },
     {
       image = images.imageFromText("🔉", "Mic Vol"),
       press_callback = actions.reset_mic_volume
@@ -55,8 +65,8 @@ local layers = {
     {},
     {},
     {
-      image = images.imageFromText("🔒", "", {yoffset=0}),
-      press_callback = actions.sleep_screen,
+      image = images.imageFromText("3", "Layer"),
+      press_callback = streamdeck.changeLayerCallback('layer3')
     },
   },
 
@@ -82,10 +92,10 @@ local layers = {
       -- Shush
       passthrough = 'default'
     },
-    {},
-    {},
-    {},
-    {},
+    app_button('com.apple.MobileSMS'),
+    app_button('com.google.Chrome'),
+    app_button('com.kapeli.dashdoc'),
+    app_button('com.tinyspeck.slackmacgap'),
   },
 
   -- Zoom Layer
@@ -134,6 +144,31 @@ local layers = {
     {
       image = images.imageFromText("X", "Leave"),
       press_callback = zoom_actions.leave_meeting_no_prompt,
+    },
+  },
+
+  -- Layer 3
+  layer3 = {
+    -- Row 1
+    {},
+    {},
+    {},
+    {},
+    {},
+    -- Row 2
+    {},
+    {},
+    {},
+    {},
+    {},
+    -- Row 3
+    {},
+    {},
+    {},
+    {},
+    {
+      image = images.imageFromText("<", "Back"),
+      press_callback = streamdeck.changeLayerCallback('default')
     },
   },
 
