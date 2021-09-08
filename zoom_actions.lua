@@ -19,7 +19,7 @@ function zoom_actions.select_menu_items(items)
 end
 
 function zoom_actions.audio_toggle()
-  zoom_actions.select_menu_items({"Mute audio", "Unmute audio"})
+  zoom_actions.select_menu_items({"Mute Audio", "Unmute Audio"})
 end
 
 function zoom_actions.camera_toggle()
@@ -57,7 +57,7 @@ function zoom_actions.leave_meeting_no_prompt()
   if zoom_actions.select_menu_items({{"Window", "Close"}}) then
     hs.timer.doAfter(0.5, function()
       local app = hs.application.find("zoom.us")
-      hs.eventtap.keyStroke({}, "Enter", nil, app)
+      hs.eventtap.keyStroke({}, "Return", nil, app)
     end)
   end
 end
