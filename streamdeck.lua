@@ -1,6 +1,6 @@
 -- Make sure hotkey functions are loaded so we can refer to them as streamdeck
 -- callbacks
-require("hotkeys")
+local actions = require("actions")
 require("streamdeck/images")
 
 -- Callback for use as a streamdeck key callback
@@ -17,15 +17,15 @@ local layers = {
     { },
     {
       image = streamdeck_imageFromText("🔉", "Mic Vol"),
-      press_callback = hotkey_reset_mic_volume
+      press_callback = actions.reset_mic_volume
     },
     {
       image = streamdeck_imageWithLabel("slack.png", "Away", {yoffset=0}),
-      press_callback = hotkey_away
+      press_callback = actions.slack_away
     },
     {
       image = streamdeck_imageWithLabel("slack.png", "Back", {yoffset=0}),
-      press_callback = hotkey_back
+      press_callback = actions.slack_back
     },
     {
       image = streamdeck_imageFromText("2", "Layer"),
@@ -34,15 +34,15 @@ local layers = {
     -- Row 2
     {
       image = streamdeck_imageFromText("🎧", "Headset"),
-      press_callback = hotkey_audio_headset,
+      press_callback = actions.audio_headset,
     },
     {
       image = streamdeck_imageFromText("🔈", "Speaker"),
-      press_callback = hotkey_audio_speaker,
+      press_callback = actions.audio_speaker,
     },
     {
       image = streamdeck_imageFromText("💻", "Laptop Speaker"),
-      press_callback = hotkey_audio_laptop,
+      press_callback = actions.audio_laptop,
     },
     {},
     {
