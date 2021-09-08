@@ -97,4 +97,24 @@ function actions.keypress(key)
   end
 end
 
+function actions.toggle_application(bundleID)
+  return function()
+    local app = hs.application.get(bundleID)
+    if app == nil then
+        hs.application.open(bundleID)
+        return
+    end
+    if app:isRunning() then
+        if app:isFrontmost() then
+            app:hide()
+        else
+            hs.application.open(bundleID)
+            app:activate()
+        end
+    else
+        hs.application.open(bundleID)
+    end
+  end
+end
+
 return actions
