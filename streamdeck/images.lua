@@ -1,3 +1,5 @@
+local images = {}
+
 local buttonWidth = 96
 local buttonHeight = 96
 
@@ -10,14 +12,14 @@ local defaultTextColor = colors['Crayons']['Silver']
 local defaultTextFont = ".AppleSystemUIFont"
 
 -- Given a series of elements, return a button image
-function streamdeck_imageFromElements(elements)
+function images.imageFromElements(elements)
   sharedCanvas:replaceElements(elements)
   return sharedCanvas:imageFromCanvas()
 end
 
 -- Return a canvas element for a button label
 -- Used as part of the other button image functions
-function streamdeck_imageLabel(label, options)
+function images.imageLabel(label, options)
   local options = options or {}
   local label = label or ""
   textColor = options['textColor'] or defaultTextColor
@@ -37,15 +39,15 @@ function streamdeck_imageLabel(label, options)
   }
 end
 
-function streamdeck_blankImage()
-  return streamdeck_imageFromElements({
+function images.blankImage()
+  return images.imageFromElements({
     type = 'rectangle',
     action = 'skip',
   })
 end
 
 -- Create a frame for an image, taking into account scaling and offset options
-function streamdeck_scaledFrame(options)
+function images.scaledFrame(options)
   local options = options or {}
   scale = options['scale'] or 1.0
   xoffset = options['xoffset'] or 0
@@ -63,14 +65,14 @@ end
 -- Create an image from the given text
 -- options is a table with textColor, backgroundColor, font, fontSize keys.
 -- All optional.
-function streamdeck_imageFromText(text, label, options)
+function images.imageFromText(text, label, options)
   local options = options or {}
   textColor = options['textColor'] or defaultTextColor
   font = options['font'] or ".AppleSystemUIFont"
   fontSize = options['fontSize'] or 70
-  return streamdeck_imageFromElements({
+  return images.imageFromElements({
     {
-      frame = streamdeck_scaledFrame(options),
+      frame = images.scaledFrame(options),
       text = hs.styledtext.new(text, {
         font = { name = font, size = fontSize },
         paragraphStyle = { alignment = "center" },
@@ -78,18 +80,20 @@ function streamdeck_imageFromText(text, label, options)
       }),
       type = "text",
     },
-    streamdeck_imageLabel(label, options),
+    images.imageLabel(label, options),
   })
 end
 
-function streamdeck_imageWithLabel(path, label, options)
-  return streamdeck_imageFromElements({
+function images.imageWithLabel(path, label, options)
+  return images.imageFromElements({
     {
       type = "image",
-      frame = streamdeck_scaledFrame(options),
+      frame = images.scaledFrame(options),
       image = hs.image.imageFromPath(hs.configdir .. "/images/" .. path),
       -- imageScaling = "scaleToFit",
     },
-    streamdeck_imageLabel(label, options)
+    images.imageLabel(label, options)
   })
 end
+
+return images

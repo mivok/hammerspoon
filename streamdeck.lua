@@ -1,7 +1,7 @@
 -- Make sure hotkey functions are loaded so we can refer to them as streamdeck
 -- callbacks
 local actions = require("actions")
-require("streamdeck/images")
+local images = require("streamdeck/images")
 
 -- Callback for use as a streamdeck key callback
 function streamdeck_changeLayerCallback(layer)
@@ -16,42 +16,42 @@ local layers = {
     -- Row 1
     { },
     {
-      image = streamdeck_imageFromText("🔉", "Mic Vol"),
+      image = images.imageFromText("🔉", "Mic Vol"),
       press_callback = actions.reset_mic_volume
     },
     {
-      image = streamdeck_imageWithLabel("slack.png", "Away", {yoffset=0}),
+      image = images.imageWithLabel("slack.png", "Away", {yoffset=0}),
       press_callback = actions.slack_away
     },
     {
-      image = streamdeck_imageWithLabel("slack.png", "Back", {yoffset=0}),
+      image = images.imageWithLabel("slack.png", "Back", {yoffset=0}),
       press_callback = actions.slack_back
     },
     {
-      image = streamdeck_imageFromText("2", "Layer"),
+      image = images.imageFromText("2", "Layer"),
       press_callback = streamdeck_changeLayerCallback('layer2')
     },
     -- Row 2
     {
-      image = streamdeck_imageFromText("🎧", "Headset"),
+      image = images.imageFromText("🎧", "Headset"),
       press_callback = actions.audio_headset,
     },
     {
-      image = streamdeck_imageFromText("🔈", "Speaker"),
+      image = images.imageFromText("🔈", "Speaker"),
       press_callback = actions.audio_speaker,
     },
     {
-      image = streamdeck_imageFromText("💻", "Laptop Speaker"),
+      image = images.imageFromText("💻", "Laptop Speaker"),
       press_callback = actions.audio_laptop,
     },
     {},
     {
-      image = streamdeck_imageWithLabel("zoom.png", "Zoom", {scale=0.6}),
+      image = images.imageWithLabel("zoom.png", "Zoom", {scale=0.6}),
       press_callback = streamdeck_changeLayerCallback('zoom')
     },
     -- Row 3
     {
-      image = streamdeck_imageWithLabel('shush.png', 'Shush', {
+      image = images.imageWithLabel('shush.png', 'Shush', {
         scale = 0.75, yoffset = 10}),
       press_callback = function() hs.eventtap.event.newKeyEvent("F13", true):post() end,
       release_callback = function() hs.eventtap.event.newKeyEvent("F13", false):post() end,
@@ -70,7 +70,7 @@ local layers = {
     {},
     {},
     {
-      image = streamdeck_imageFromText("<", "Back"),
+      image = images.imageFromText("<", "Back"),
       press_callback = streamdeck_changeLayerCallback('default')
     },
     -- Row 2
@@ -103,7 +103,7 @@ local layers = {
     {},
     {},
     {
-      image = streamdeck_imageFromText("<", "Back"),
+      image = images.imageFromText("<", "Back"),
       press_callback = streamdeck_changeLayerCallback('default')
     },
     -- Row 3
@@ -167,7 +167,7 @@ function streamdeck_changeLayer(layer)
     if button and button.image then
       streamdeckDevice:setButtonImage(idx, button.image)
     else
-      streamdeckDevice:setButtonImage(idx, streamdeck_blankImage())
+      streamdeckDevice:setButtonImage(idx, images.blankImage())
     end
   end
 end
