@@ -1,15 +1,9 @@
 -- Make sure hotkey functions are loaded so we can refer to them as streamdeck
 -- callbacks
+local streamdeck = require("streamdeck/streamdeck")
 local images = require("streamdeck/images")
 local actions = require("actions")
 local zoom_actions = require("zoom_actions")
-
--- Callback for use as a streamdeck key callback
-function streamdeck_changeLayerCallback(layer)
-  return function()
-    streamdeck_changeLayer(layer)
-  end
-end
 
 local layers = {
   -- Layer 1 - Main layer
@@ -30,7 +24,7 @@ local layers = {
     },
     {
       image = images.imageFromText("2", "Layer"),
-      press_callback = streamdeck_changeLayerCallback('layer2')
+      press_callback = streamdeck.changeLayerCallback('layer2')
     },
     -- Row 2
     {
@@ -48,7 +42,7 @@ local layers = {
     {},
     {
       image = images.imageWithLabel("zoom.png", "Zoom", {scale=0.6}),
-      press_callback = streamdeck_changeLayerCallback('zoom')
+      press_callback = streamdeck.changeLayerCallback('zoom')
     },
     -- Row 3
     {
@@ -66,7 +60,7 @@ local layers = {
     },
   },
 
-  -- Layer 2
+  -- Layer 2 - Extras
   layer2 = {
     -- Row 1
     {},
@@ -75,7 +69,7 @@ local layers = {
     {},
     {
       image = images.imageFromText("<", "Back"),
-      press_callback = streamdeck_changeLayerCallback('default')
+      press_callback = streamdeck.changeLayerCallback('default')
     },
     -- Row 2
     {},
@@ -93,7 +87,8 @@ local layers = {
     {},
     {},
   },
-  -- Layer 3 - Zoom Layer
+
+  -- Zoom Layer
   zoom = {
     -- Row 1
     {},
@@ -117,7 +112,7 @@ local layers = {
     },
     {
       image = images.imageFromText("<", "Back"),
-      press_callback = streamdeck_changeLayerCallback('default')
+      press_callback = streamdeck.changeLayerCallback('default')
     },
     -- Row 3
     {
@@ -141,6 +136,7 @@ local layers = {
       press_callback = zoom_actions.leave_meeting_no_prompt,
     },
   },
+
   -- Layer N - Blank template layer
   blank = {
     -- Row 1
@@ -164,48 +160,4 @@ local layers = {
   },
 }
 
-function streamdeck_buttonCallback(sd, button_number, pressed)
-  -- If a button has the passthrough attribute set, keep going up a layer
-  -- until we find a non-passthrough button
-  local button = layers[currentLayer][button_number]
-  if button.passthrough then
-    button = layers[button.passthrough][button_number]
-  end
-
-  if pressed and button.press_callback then
-    button.press_callback()
-  elseif button.release_callback then
-    button.release_callback()
-  end
-end
-
-
-function streamdeck_changeLayer(layer)
-  currentLayer = layer
-  for idx, button in ipairs(layers[currentLayer]) do
-
-    -- Deal with passthrough layers
-    if button.passthrough then
-      button = layers[button.passthrough][idx]
-    end
-
-    if button and button.image then
-      streamdeckDevice:setButtonImage(idx, button.image)
-    else
-      streamdeckDevice:setButtonImage(idx, images.blankImage())
-    end
-  end
-end
-
-function streamdeck_init(connected, sd)
-  if connected then
-    streamdeckDevice = sd
-  else
-    streamdeckDevice = nil
-  end
-
-  streamdeck_changeLayer('default')
-  sd:buttonCallback(streamdeck_buttonCallback)
-end
-
-hs.streamdeck.init(streamdeck_init)
+streamdeck.init(layers)

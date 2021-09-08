@@ -39,13 +39,6 @@ function images.imageLabel(label, options)
   }
 end
 
-function images.blankImage()
-  return images.imageFromElements({
-    type = 'rectangle',
-    action = 'skip',
-  })
-end
-
 -- Create a frame for an image, taking into account scaling and offset options
 function images.scaledFrame(options)
   local options = options or {}
