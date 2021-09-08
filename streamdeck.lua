@@ -74,7 +74,7 @@ local layers = {
   layer2 = {
     -- Row 1
     {
-      image = images.imageFromText("A", "AWS Login"),
+      image = images.imageWithLabel("aws.png", "AWS Login"),
       press_callback = actions.saml2aws_login,
     },
     {},
@@ -108,11 +108,11 @@ local layers = {
     {passthrough = 'default'}, -- Mic volume reset
     {},
     {
-      image = images.imageFromText(".", "Participants"),
+      image = images.imageWithLabel("zoom-participants.png", "Participants", {scale=0.70}),
       press_callback = zoom_actions.show_participants,
     },
     {
-      image = images.imageFromText(".", "Chat"),
+      image = images.imageWithLabel("zoom-chat.png", "Chat", {scale=0.70}),
       press_callback = zoom_actions.show_chat,
     },
     -- Row 2
@@ -120,7 +120,7 @@ local layers = {
     {passthrough = 'default'}, -- Speaker
     {passthrough = 'default'}, -- Laptop
     {
-      image = images.imageFromText(".", "Share Pause"),
+      image = images.imageWithLabel("zoom-pause.png", "Share Pause", {scale=0.50}),
       press_callback = zoom_actions.share_pause,
     },
     {
@@ -133,19 +133,20 @@ local layers = {
       passthrough = 'default'
     },
     {
-      image = images.imageFromText("M", "Mute"),
+      image = images.imageWithLabel("zoom-mic.png", "Mute", {scale=0.70}),
       press_callback = zoom_actions.audio_toggle,
     },
     {
-      image = images.imageFromText("C", "Camera"),
+      image = images.imageWithLabel("zoom-camera.png", "Camera", {scale=0.70}),
       press_callback = zoom_actions.camera_toggle,
     },
     {
-      image = images.imageFromText("S", "Share"),
+      image = images.imageWithLabel("zoom-share.png", "Share", {scale=0.70}),
       press_callback = zoom_actions.share_toggle,
     },
     {
-      image = images.imageFromText("X", "Leave"),
+      image = images.imageFromText("x", "Leave",
+        {textColor=hs.drawing.color.hammerspoon.osx_red}),
       press_callback = zoom_actions.leave_meeting_no_prompt,
     },
   },
