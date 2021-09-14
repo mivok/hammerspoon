@@ -106,7 +106,10 @@ local layers = {
     -- Row 1
     {},
     {passthrough = 'default'}, -- Mic volume reset
-    {},
+    {
+      image = images.imageFromText("⤢", "Full Screen"),
+      press_callback = zoom_actions.toggle_full_screen,
+    },
     {
       image = images.imageWithLabel("zoom-participants.png", "Participants", {scale=0.70}),
       press_callback = zoom_actions.show_participants,

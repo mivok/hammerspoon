@@ -82,4 +82,11 @@ function zoom_actions.leave_meeting_no_prompt()
   end
 end
 
+function zoom_actions.toggle_full_screen()
+  zoom_actions.select_menu_items({
+    {"Window", "Enter Full Screen"},
+    {"Window", "Exit Full Screen"}
+  })
+end
+
 return zoom_actions
