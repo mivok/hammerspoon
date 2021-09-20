@@ -4,6 +4,7 @@ local streamdeck = {}
 streamdeck.layers = {}
 streamdeck.currentLayer = 'default'
 streamdeck.device = nil
+streamdeck.isLocked = false
 
 -- Callback for use as a streamdeck key callback
 function streamdeck.changeLayerCallback(layer)
@@ -13,6 +14,10 @@ function streamdeck.changeLayerCallback(layer)
 end
 
 function streamdeck.buttonCallback(sd, button_number, pressed)
+  if streamdeck.isLocked then
+    return
+  end
+
   local button = streamdeck.layers[streamdeck.currentLayer][button_number]
 
   -- Deal with passthrough buttons
@@ -49,10 +54,45 @@ function streamdeck.deviceConnectedCallback(connected, sd)
     streamdeck.device = sd
   else
     streamdeck.device = nil
+    return
   end
 
   streamdeck.changeLayer('default')
+  streamdeck.setupLockScreenMonitoring()
   sd:buttonCallback(streamdeck.buttonCallback)
+end
+
+function streamdeck.blankScreen()
+  local rows, cols = streamdeck.device:buttonLayout()
+  local numButtons = rows * cols
+  for idx = 1,numButtons do
+    streamdeck.device:setButtonColor(idx, hs.drawing.color.hammerspoon.black)
+  end
+end
+
+function streamdeck.updateScreenLocked(isLocked)
+  streamdeck.isLocked = isLocked
+  if isLocked then
+    streamdeck.blankScreen()
+  else
+    streamdeck.changeLayer(streamdeck.currentLayer)
+  end
+end
+
+function streamdeck.setupLockScreenMonitoring()
+  -- Set initial state
+  streamdeck.updateScreenLocked(hs.caffeinate.sessionProperties(). CGSSessionScreenIsLocked)
+  -- Start the watcher
+  if not streamdeck.caffeinateWatcher then
+    streamdeck.caffeinateWatcher = hs.caffeinate.watcher.new(function(e)
+      if e == hs.caffeinate.watcher.screensDidLock then
+        streamdeck.updateScreenLocked(true)
+      elseif e == hs.caffeinate.watcher.screensDidUnlock then
+        streamdeck.updateScreenLocked(false)
+      end
+    end)
+    streamdeck.caffeinateWatcher:start()
+  end
 end
 
 function streamdeck.init(layers)
