@@ -61,9 +61,21 @@ local layers = {
       press_callback = actions.keydown("F13"),
       release_callback = actions.keyup("F13"),
     },
-    {},
-    {},
-    {},
+    {
+      image = images.imageFromText('⏮︎ ', 'Prev'),
+      press_callback = actions.syskeydown("PREVIOUS"),
+      release_callback = actions.syskeyup("PREVIOUS"),
+    },
+    {
+      image = images.imageFromText('⏯︎ ', 'Play'),
+      press_callback = actions.syskeydown("PLAY"),
+      release_callback = actions.syskeyup("PLAY"),
+    },
+    {
+      image = images.imageFromText('⏭︎ ', 'Next'),
+      press_callback = actions.syskeydown("NEXT"),
+      release_callback = actions.syskeyup("NEXT"),
+    },
     {
       image = images.imageFromText("3", "Layer"),
       press_callback = streamdeck.changeLayerCallback('layer3')

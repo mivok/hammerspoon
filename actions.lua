@@ -97,6 +97,25 @@ function actions.keypress(key)
   end
 end
 
+function actions.syskeydown(key)
+  return function()
+    hs.eventtap.event.newSystemKeyEvent(key, true):post()
+  end
+end
+
+function actions.syskeyup(key)
+  return function()
+    hs.eventtap.event.newSystemKeyEvent(key, false):post()
+  end
+end
+
+function actions.syskeypress(key)
+  return function()
+    actions.syskeydown(key)()
+    actions.syskeyup(key)()
+  end
+end
+
 function actions.toggle_application(bundleID)
   return function()
     local app = hs.application.get(bundleID)

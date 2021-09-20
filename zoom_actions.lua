@@ -84,8 +84,17 @@ end
 
 function zoom_actions.toggle_full_screen()
   zoom_actions.select_menu_items({
+    {"Meeting", "Fullscreen"},
+    {"Meeting", "Exit Fullscreen"},
     {"Window", "Enter Full Screen"},
     {"Window", "Exit Full Screen"}
+  })
+end
+
+function zoom_actions.toggle_view()
+  zoom_actions.select_menu_items({
+    {"Meeting", "Gallery View"},
+    {"Meeting", "Speaker View"}
   })
 end
 
