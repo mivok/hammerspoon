@@ -21,8 +21,8 @@ local layers = {
       press_callback = actions.sleep_screen,
     },
     {
-      image = images.imageFromText("🔉", "Mic Vol"),
-      press_callback = actions.reset_mic_volume
+      image = images.imageWithLabel("aws.png", "AWS Login"),
+      press_callback = actions.saml2aws_login,
     },
     {
       image = images.imageWithLabel("slack.png", "Away", {yoffset=0}),
@@ -37,18 +37,9 @@ local layers = {
       press_callback = streamdeck.changeLayerCallback('layer2')
     },
     -- Row 2
-    {
-      image = images.imageFromText("🎧", "Headset"),
-      press_callback = actions.audio_headset,
-    },
-    {
-      image = images.imageFromText("🔈", "Speaker"),
-      press_callback = actions.audio_speaker,
-    },
-    {
-      image = images.imageFromText("💻", "Laptop Speaker"),
-      press_callback = actions.audio_laptop,
-    },
+    {},
+    {},
+    {},
     {},
     {
       image = images.imageWithLabel("zoom.png", "Zoom", {scale=0.6}),
@@ -85,10 +76,7 @@ local layers = {
   -- Layer 2 - Extras
   layer2 = {
     -- Row 1
-    {
-      image = images.imageWithLabel("aws.png", "AWS Login"),
-      press_callback = actions.saml2aws_login,
-    },
+    {},
     {},
     {},
     {},
@@ -116,8 +104,14 @@ local layers = {
   -- Zoom Layer
   zoom = {
     -- Row 1
-    {},
-    {passthrough = 'default'}, -- Mic volume reset
+    {
+      image = images.imageFromText("🔉", "Mic Vol"),
+      press_callback = actions.reset_mic_volume
+    },
+    {
+      image = images.imageFromText("⎚", "View"),
+      press_callback = zoom_actions.toggle_view,
+    },
     {
       image = images.imageFromText("⤢", "Full Screen"),
       press_callback = zoom_actions.toggle_full_screen,
@@ -131,9 +125,18 @@ local layers = {
       press_callback = zoom_actions.show_chat,
     },
     -- Row 2
-    {passthrough = 'default'}, -- Headset
-    {passthrough = 'default'}, -- Speaker
-    {passthrough = 'default'}, -- Laptop
+    {
+      image = images.imageFromText("🎧", "Headset"),
+      press_callback = actions.audio_headset,
+    },
+    {
+      image = images.imageFromText("🔈", "Speaker"),
+      press_callback = actions.audio_speaker,
+    },
+    {
+      image = images.imageFromText("💻", "Laptop Speaker"),
+      press_callback = actions.audio_laptop,
+    },
     {
       image = images.imageWithLabel("zoom-pause.png", "Share Pause", {scale=0.50}),
       press_callback = zoom_actions.share_pause,
