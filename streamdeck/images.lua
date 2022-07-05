@@ -89,4 +89,27 @@ function images.imageWithLabel(path, label, options)
   })
 end
 
+function images.overlayText(image, text, options)
+  -- Takes an existing image and adds the text as an overlay
+  local options = options or {}
+  textColor = options['textColor'] or defaultTextColor
+  font = options['font'] or ".AppleSystemUIFont"
+  fontSize = options['fontSize'] or 70
+  return images.imageFromElements({
+    {
+      type = "image",
+      image = image
+    },
+    {
+      frame = images.scaledFrame(options),
+      text = hs.styledtext.new(text, {
+        font = { name = font, size = fontSize },
+        paragraphStyle = { alignment = "center" },
+        color = textColor,
+      }),
+      type = "text",
+    }
+  })
+end
+
 return images

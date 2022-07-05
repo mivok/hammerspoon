@@ -2,7 +2,9 @@
 -- callbacks
 local streamdeck = require("streamdeck/streamdeck")
 local images = require("streamdeck/images")
+
 local actions = require("actions")
+local status_callbacks = require("status_callbacks")
 local zoom_actions = require("zoom_actions")
 
 function app_button(bundleID)
@@ -128,14 +130,17 @@ local layers = {
     {
       image = images.imageFromText("🎧", "Headset"),
       press_callback = actions.audio_headset,
+      update_callback = status_callbacks.audio_headset,
     },
     {
       image = images.imageFromText("🔈", "Speaker"),
       press_callback = actions.audio_speaker,
+      update_callback = status_callbacks.audio_speaker,
     },
     {
       image = images.imageFromText("💻", "Laptop Speaker"),
       press_callback = actions.audio_laptop,
+      update_callback = status_callbacks.audio_laptop,
     },
     {
       image = images.imageWithLabel("zoom-pause.png", "Share Pause", {scale=0.50}),

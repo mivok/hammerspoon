@@ -4,6 +4,7 @@ local streamdeck = {}
 streamdeck.layers = {}
 streamdeck.currentLayer = 'default'
 streamdeck.device = nil
+streamdeck.update_timer = nil
 streamdeck.isLocked = false
 
 -- Callback for use as a streamdeck key callback
@@ -35,17 +36,57 @@ end
 function streamdeck.changeLayer(layer)
   streamdeck.currentLayer = layer
   for idx, button in ipairs(streamdeck.layers[streamdeck.currentLayer]) do
+    streamdeck.updateButtonImage(idx, button)
+  end
+end
 
-    -- Deal with passthrough buttons
-    if button.passthrough then
-      button = streamdeck.layers[button.passthrough][idx]
-    end
+function streamdeck.updateButtonImage(idx, button)
+  -- Don't update any images if the screen is locked
+  if streamdeck.isLocked then
+    return
+  end
 
-    if button and button.image then
-      streamdeck.device:setButtonImage(idx, button.image)
-    else
-      streamdeck.device:setButtonColor(idx, hs.drawing.color.hammerspoon.black)
+  -- Deal with passthrough buttons
+  if button.passthrough then
+    button = streamdeck.layers[button.passthrough][idx]
+  end
+
+  if button and button.status_image then
+    streamdeck.device:setButtonImage(idx, button.status_image)
+  elseif button and button.image then
+    streamdeck.device:setButtonImage(idx, button.image)
+  else
+    streamdeck.device:setButtonColor(idx, hs.drawing.color.hammerspoon.black)
+  end
+end
+
+function streamdeck.runUpdateCallbacks()
+  for layerid, layer in pairs(streamdeck.layers) do
+    for idx, button in ipairs(layer) do
+      if button.update_callback then
+        old_status_image = button.status_image
+        button:update_callback()
+        -- Update the button image if it changed
+        if layerid == streamdeck.currentLayer then
+          if button.status_image ~= old_status_image then
+            streamdeck.updateButtonImage(idx, button)
+          end
+        end
+      end
     end
+  end
+end
+
+function streamdeck.setupUpdateTimer()
+  streamdeck.update_timer = hs.timer.doEvery(5, streamdeck.runUpdateCallbacks)
+  -- Initial run
+  streamdeck.runUpdateCallbacks()
+end
+
+function streamdeck.cancelUpdateTimer()
+  if streamdeck.update_timer then
+    streamdeck.update_timer:stop()
+    streamdeck.update_timer = nil
   end
 end
 
@@ -54,10 +95,12 @@ function streamdeck.deviceConnectedCallback(connected, sd)
     streamdeck.device = sd
   else
     streamdeck.device = nil
+    streamdeck.cancelUpdateTimer()
     return
   end
 
   streamdeck.changeLayer('default')
+  streamdeck.setupUpdateTimer()
   streamdeck.setupLockScreenMonitoring()
   sd:buttonCallback(streamdeck.buttonCallback)
 end
