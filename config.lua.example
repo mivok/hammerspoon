@@ -1,0 +1,6 @@
+-- Example config for hammerspoon
+-- Copy this to ~/.config/hammerspoon/config.lua to use it
+return {
+  -- Profile to use for aws sso login
+  aws_sso_profile = 'myprofile'
+}

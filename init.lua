@@ -4,6 +4,9 @@
 local fennel = require("fennel")
 table.insert(package.loaders or package.searchers, fennel.searcher)
 
+-- Load config from a different location (stored in dotfiles private repo)
+config = dofile(os.getenv("HOME") .. "/.config/hammerspoon/config.lua")
+
 local audio = require("audio")
 local hotkeys = require("hotkeys")
 local windowmanage = require("windowmanage")

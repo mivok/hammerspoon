@@ -164,6 +164,6 @@ function actions.aws_sso_login()
       hs.notify.show("AWS SSO login", "",
         "Login failed. See console logs for output.", "")
     end
-  end, {'sso', 'login'}):start()
+  end, {'sso', 'login', '--profile', config.aws_sso_profile}):start()
 end
 return actions
