@@ -1,6 +1,10 @@
 -- Example config for hammerspoon
 -- Copy this to ~/.config/hammerspoon/config.lua to use it
 return {
+  -- Names of work and personal machines for IPC
+  work_machine = 'work-machine',
+  personal_machine = 'personal-machine',
+
   -- Profile to use for aws sso login
   aws_sso_profile = 'myprofile'
 }

@@ -166,4 +166,25 @@ function actions.aws_sso_login()
     end
   end, {'sso', 'login', '--profile', config.aws_sso_profile}):start()
 end
+
+function actions.on_personal(callback)
+  -- Wrap a callback action that should be run on my personal machine
+  return function()
+    -- the () is added at the end here so the callback gets called when run
+    -- remotely, meaning you can just wrap an existing callback function in
+    -- this one to make it work remotely
+    ipc.on_personal(callback .. "()")
+  end
+end
+
+function actions.on_work(callback)
+  -- Wrap a callback action that should be run on my personal machine
+  return function()
+    -- the () is added at the end here so the callback gets called when run
+    -- remotely, meaning you can just wrap an existing callback function in
+    -- this one to make it work remotely
+    ipc.on_work(callback .. "()")
+  end
+end
+
 return actions

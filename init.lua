@@ -7,10 +7,11 @@ table.insert(package.loaders or package.searchers, fennel.searcher)
 -- Load config from a different location (stored in dotfiles private repo)
 config = dofile(os.getenv("HOME") .. "/.config/hammerspoon/config.lua")
 
-local audio = require("audio")
-local hotkeys = require("hotkeys")
-local windowmanage = require("windowmanage")
-local streamdeck = require("streamdeck")
+audio = require("audio")
+hotkeys = require("hotkeys")
+windowmanage = require("windowmanage")
+streamdeck = require("streamdeck")
+ipc = require("ipc")
 
 ---- Automatically reload the config ----
 pw1 = hs.pathwatcher.new(hs.configdir, function(paths)
