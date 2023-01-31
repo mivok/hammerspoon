@@ -24,7 +24,7 @@ local layers = {
     },
     {
       image = images.imageWithLabel("aws.png", "AWS Login"),
-      press_callback = actions.saml2aws_login,
+      press_callback = actions.aws_sso_login,
     },
     {},
     {},

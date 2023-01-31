@@ -127,7 +127,7 @@ end
 
 function actions.saml2aws_login()
   hs.notify.show("Saml2aws login", "", "Running saml2aws", "")
-  hs.task.new('/usr/local/bin/saml2aws', function(exitcode, stdout, stderr)
+  hs.task.new('/opt/homebrew/bin/saml2aws', function(exitcode, stdout, stderr)
     local msg = {}
     if exitcode ~= 0 then
       table.insert(msg, "ERROR: exit code " .. exitcode)
@@ -142,4 +142,28 @@ function actions.saml2aws_login()
   end, {'login', '--skip-prompt'}):start()
 end
 
+function actions.aws_sso_login()
+  hs.notify.show("AWS SSO login", "", "Running aws sso login", "")
+  hs.task.new('/opt/homebrew/bin/aws', function(exitcode, stdout, stderr)
+    local msg = {}
+    if exitcode ~= 0 then
+      table.insert(msg, "ERROR: exit code " .. exitcode)
+    end
+    if stdout ~= "" then
+      table.insert(msg, (stdout:gsub("^%s*(.-)%s*$", "%1")))
+    end
+    if stderr ~= "" then
+      table.insert(msg, (stderr:gsub("^%s*(.-)%s*$", "%1")))
+    end
+    local l = hs.logger.new("AWS login")
+    l.setLogLevel("info")
+    l.i(table.concat(msg, "\n\n"))
+    if exitcode == 0 then
+      hs.notify.show("AWS SSO login", "", "Login successful", "")
+    else
+      hs.notify.show("AWS SSO login", "",
+        "Login failed. See console logs for output.", "")
+    end
+  end, {'sso', 'login'}):start()
+end
 return actions
