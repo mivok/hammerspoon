@@ -13,6 +13,9 @@ windowmanage = require("windowmanage")
 streamdeck = require("streamdeck")
 ipc = require("ipc")
 
+-- Make callback actions accessible by the hs cli command for ipc purposes
+actions = require("actions")
+
 ---- Automatically reload the config ----
 pw1 = hs.pathwatcher.new(hs.configdir, function(paths)
   for _, path in ipairs(paths) do
