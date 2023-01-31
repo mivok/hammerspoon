@@ -26,8 +26,22 @@ local layers = {
       image = images.imageWithLabel("aws.png", "AWS Login"),
       press_callback = actions.aws_sso_login,
     },
-    {},
-    {},
+    {
+      image = images.overlayText(images.imageFromText("📋", "Get"),
+        "<", {
+          textColor=hs.drawing.color.hammerspoon.black,
+          yoffset=5,
+        }),
+      press_callback = actions.get_clipboard('personal'),
+    },
+    {
+      image = images.overlayText(images.imageFromText("📋", "Send"),
+        ">", {
+          textColor=hs.drawing.color.hammerspoon.black,
+          yoffset=5,
+        }),
+      press_callback = actions.send_clipboard('personal'),
+    },
     {
       image = images.imageFromText("2", "Layer"),
       press_callback = streamdeck.changeLayerCallback('layer2')

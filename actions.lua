@@ -182,4 +182,42 @@ function actions.remote_syskeypress(machine, key)
   return actions.on_machine(machine, 'actions.syskeypress("'..key..'")')
 end
 
+function actions.send_clipboard(machine)
+  return function()
+    local typesAvailable = hs.pasteboard.typesAvailable()
+    local contents
+    if typesAvailable.image then
+      contents = hs.pasteboard.readImage():encodeAsURLString()
+    else
+      contents = hs.pasteboard.getContents()
+    end
+    remote_code = [[
+      local contents = "]]..contents..[["
+      hs.pasteboard.writeObjects(hs.image.imageFromURL(contents) or contents)
+      hs.notify.show("Clipboard synced", "", "")
+    ]]
+    rpc.run_on_machine(machine, remote_code)
+  end
+end
+
+function actions.get_clipboard(machine)
+  return function()
+    remote_code = [[
+    local typesAvailable = hs.pasteboard.typesAvailable()
+    local contents
+    if typesAvailable.image then
+      contents = hs.pasteboard.readImage():encodeAsURLString()
+    end
+    return contents
+    ]]
+    rpc.run_on_machine(machine, remote_code, function(stdout)
+      -- Try to convert from an image first, which will return nil if the
+      -- contents aren't an encoded image, otherwise just use a string
+      hs.pasteboard.writeObjects(hs.image.imageFromURL(stdout) or stdout)
+      hs.notify.show("Clipboard synced", "", "")
+    end)
+  end
+end
+
+
 return actions
