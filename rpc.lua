@@ -17,7 +17,7 @@ function rpc.ssh(host, command, input)
   t:start()
 end
 
-function rpc.ssh_ipc(host, code)
+function rpc.ssh_rpc(host, code)
   -- Run hammerspoon code on the specified machine using ssh and the hs command
   rpc.ssh(host, "/opt/homebrew/bin/hs -s", code)
 end
