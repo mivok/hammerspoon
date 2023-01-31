@@ -167,24 +167,19 @@ function actions.aws_sso_login()
   end, {'sso', 'login', '--profile', config.aws_sso_profile}):start()
 end
 
-function actions.on_personal(callback)
+function actions.on_machine(machine, callback)
   -- Wrap a callback action that should be run on my personal machine
   return function()
     -- the () is added at the end here so the callback gets called when run
     -- remotely, meaning you can just wrap an existing callback function in
     -- this one to make it work remotely
-    ipc.on_personal(callback .. "()")
+    rpc.run_on_machine(machine, callback .. "()")
   end
 end
 
-function actions.on_work(callback)
-  -- Wrap a callback action that should be run on my personal machine
-  return function()
-    -- the () is added at the end here so the callback gets called when run
-    -- remotely, meaning you can just wrap an existing callback function in
-    -- this one to make it work remotely
-    ipc.on_work(callback .. "()")
-  end
+function actions.remote_syskeypress(machine, key)
+  -- Press a system key (e.g. a media key) on the specified machine
+  return actions.on_machine(machine, 'actions.syskeypress("'..key..'")')
 end
 
 return actions

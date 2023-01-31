@@ -11,7 +11,7 @@ audio = require("audio")
 hotkeys = require("hotkeys")
 windowmanage = require("windowmanage")
 streamdeck = require("streamdeck")
-ipc = require("ipc")
+rpc = require("rpc")
 
 -- Make callback actions accessible by the hs cli command for ipc purposes
 actions = require("actions")

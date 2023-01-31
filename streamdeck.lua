@@ -4,7 +4,6 @@ local streamdeck = require("streamdeck/streamdeck")
 local images = require("streamdeck/images")
 
 local actions = require("actions")
-local ipc = require("ipc")
 local status_callbacks = require("status_callbacks")
 local zoom_actions = require("zoom_actions")
 
@@ -51,15 +50,15 @@ local layers = {
     },
     {
       image = images.imageFromText('⏮︎ ', 'Prev'),
-      press_callback = actions.on_personal('actions.syskeypress("PREVIOUS")'),
+      press_callback = actions.remote_syskeypress('personal', 'PREVIOUS'),
     },
     {
       image = images.imageFromText('⏯︎ ', 'Play'),
-      press_callback = actions.on_personal('actions.syskeypress("PLAY")'),
+      press_callback = actions.remote_syskeypress('personal', 'PLAY'),
     },
     {
       image = images.imageFromText('⏭︎ ', 'Next'),
-      press_callback = actions.on_personal('actions.syskeypress("NEXT")'),
+      press_callback = actions.remote_syskeypress('personal', 'NEXT'),
     },
     {
       image = images.imageFromText("3", "Layer"),
