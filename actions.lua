@@ -27,17 +27,6 @@ function actions.reset_mic_volume()
     end
 end
 
--- Away/back
-function actions.slack_away()
-    hs.alert.show("Away")
-    hs.task.new(os.getenv("HOME") .. "/bin/awayback.sh", nil, {"away"}):start()
-end
-
-function actions.slack_back()
-    hs.alert.show("Back")
-    hs.task.new(os.getenv("HOME") .. "/bin/awayback.sh", nil, {"back"}):start()
-end
-
 function switch_default_audio_devices(output, input)
     outdev = hs.audiodevice.findOutputByName(output)
     indev = hs.audiodevice.findInputByName(input)

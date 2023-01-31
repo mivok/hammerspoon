@@ -26,14 +26,8 @@ local layers = {
       image = images.imageWithLabel("aws.png", "AWS Login"),
       press_callback = actions.saml2aws_login,
     },
-    {
-      image = images.imageWithLabel("slack.png", "Away", {yoffset=0}),
-      press_callback = actions.slack_away
-    },
-    {
-      image = images.imageWithLabel("slack.png", "Back", {yoffset=0}),
-      press_callback = actions.slack_back
-    },
+    {},
+    {},
     {
       image = images.imageFromText("2", "Layer"),
       press_callback = streamdeck.changeLayerCallback('layer2')

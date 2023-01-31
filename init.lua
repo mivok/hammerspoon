@@ -7,7 +7,6 @@ table.insert(package.loaders or package.searchers, fennel.searcher)
 local audio = require("audio")
 local hotkeys = require("hotkeys")
 local windowmanage = require("windowmanage")
-local zoom_detect = require("zoom_detect")
 local streamdeck = require("streamdeck")
 
 ---- Automatically reload the config ----
