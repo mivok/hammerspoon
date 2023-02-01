@@ -70,8 +70,9 @@ function streamdeck.runUpdateCallbacks()
       if button.update_callback then
         old_status_image = button.status_image
         button:update_callback()
-        -- Update the button image if it changed
-        if layerid == streamdeck.currentLayer then
+        -- Update the button image it's visible and the image changed
+        if streamdeck.layers[streamdeck.currentLayer][idx].passthrough ==
+          layerid or layerid == streamdeck.currentLayer then
           if button.status_image ~= old_status_image then
             streamdeck.updateButtonImage(idx, button)
           end
