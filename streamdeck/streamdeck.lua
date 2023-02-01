@@ -31,6 +31,10 @@ function streamdeck.buttonCallback(sd, button_number, pressed)
   elseif button.release_callback then
     button.release_callback()
   end
+
+  -- Update button status after pressing any button, so we get a faster response
+  -- on button updates. Don't do it too quickly though.
+  streamdeck.updateStatusSoon()
 end
 
 function streamdeck.changeLayer(layer)
@@ -88,6 +92,20 @@ function streamdeck.cancelUpdateTimer()
     streamdeck.update_timer:stop()
     streamdeck.update_timer = nil
   end
+end
+
+function streamdeck.updateStatusSoon()
+  -- Set up a one-shot timer to update status soon (after 1 second) that can be
+  -- called after pressing a button to show any changes to the button status
+  -- that happen as a result of pressing the button. We use a timer because some
+  -- actions are a bit slow to actually show an update.
+  if streamdeck.quick_update_timer then
+    -- Cancel any existing timer so we don't have lots of them if we press a
+    -- button over and over
+    streamdeck.quick_update_timer:stop()
+  end
+  streamdeck.quick_update_timer = hs.timer.doAfter(1,
+    streamdeck.runUpdateCallbacks)
 end
 
 function streamdeck.deviceConnectedCallback(connected, sd)

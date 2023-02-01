@@ -61,6 +61,7 @@ local layers = {
         scale = 0.75, yoffset = 10}),
       press_callback = actions.keydown("F13"),
       release_callback = actions.keyup("F13"),
+      update_callback = status_callbacks.shush,
     },
     {
       image = images.imageFromText('⏮︎ ', 'Prev'),

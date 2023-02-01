@@ -74,4 +74,12 @@ function status_callbacks.zoom_camera(button)
   return status_callbacks.zoom_menu(button, "Start Video")
 end
 
+function status_callbacks.shush(button)
+  if hs.audiodevice.defaultInputDevice():muted() then
+    button.status_image = status_callbacks.disabledImage(button.image)
+  else
+    button.status_image = nil
+  end
+end
+
 return status_callbacks
