@@ -189,11 +189,16 @@ function actions.send_clipboard(machine)
     if typesAvailable.image then
       contents = hs.pasteboard.readImage():encodeAsURLString()
     else
-      contents = hs.pasteboard.getContents()
+      -- Base64 encode here so we don't have  to worry about any special
+      -- characters as we're injecting the contents of this variable below
+      -- directly between double quotes. We could escape a bunch of characters
+      -- but this is less error prone.
+      contents = hs.base64.encode(hs.pasteboard.getContents())
     end
     remote_code = [[
       local contents = "]]..contents..[["
-      hs.pasteboard.writeObjects(hs.image.imageFromURL(contents) or contents)
+      hs.pasteboard.writeObjects(hs.image.imageFromURL(contents) or
+        hs.base64.decode(contents))
       hs.notify.show("Clipboard synced", "", "")
     ]]
     rpc.run_on_machine(machine, remote_code)
@@ -207,6 +212,8 @@ function actions.get_clipboard(machine)
     local contents
     if typesAvailable.image then
       contents = hs.pasteboard.readImage():encodeAsURLString()
+    else
+      contents = hs.pasteboard.getContents()
     end
     return contents
     ]]
