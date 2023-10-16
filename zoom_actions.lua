@@ -1,5 +1,7 @@
 local zoom_actions = {}
 
+zoom_actions.logger = hs.logger.new("zoom_actions", "debug")
+
 -- Selects an item from the zoom menu, trying each one in turn until one is
 -- found
 -- Note: items can be either strings or a table containing a path to a
@@ -11,6 +13,7 @@ function zoom_actions.select_menu_items(items)
     for _, item in ipairs(items) do
       if app:selectMenuItem(item) then
         -- The item was successfully clicked, don't try any others
+        zoom_actions.logger.i("Selected Menu Item: " .. hs.inspect(item))
         return true
       end
     end
@@ -23,13 +26,29 @@ function zoom_actions.activate_zoom_window()
   local windowTitles = {"Zoom Meeting", "Zoom Webinar"}
   if app then
     if not app:isFrontmost() then
+      zoom_actions.logger.i("Activating zoom app")
       app:activate()
     end
     for _, title in ipairs(windowTitles) do
       local window = app:findWindow(title)
       if window then
+        zoom_actions.logger.i("Focusing window: " .. title)
         window:focus()
         break
+      end
+    end
+  end
+end
+
+function zoom_actions.close_zoom_meeting_window()
+  local app = hs.application.find("zoom.us")
+  local windowTitles = {"Zoom Meeting", "Zoom Webinar"}
+  if app then
+    for _, title in ipairs(windowTitles) do
+      local window = app:findWindow(title)
+      if window then
+        zoom_actions.logger.i("Closing window: " .. title)
+        return window:close()
       end
     end
   end
@@ -72,14 +91,12 @@ end
 function zoom_actions.leave_meeting_no_prompt()
   -- Make sure the zoom window is active and that we aren't sharing the screen
   zoom_actions.select_menu_items({"Stop Share"})
-  zoom_actions.activate_zoom_window()
+  zoom_actions.close_zoom_meeting_window()
   -- Click close, wait a bit, then press Enter to confirm
-  if zoom_actions.select_menu_items({{"Window", "Close"}}) then
-    hs.timer.doAfter(0.5, function()
-      local app = hs.application.find("zoom.us")
-      hs.eventtap.keyStroke({}, "Return", nil, app)
-    end)
-  end
+  hs.timer.doAfter(0.5, function()
+    local app = hs.application.find("zoom.us")
+    hs.eventtap.keyStroke({}, "Return", nil, app)
+  end)
 end
 
 function zoom_actions.toggle_full_screen()
