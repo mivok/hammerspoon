@@ -55,7 +55,12 @@ function zoom_actions.close_zoom_meeting_window()
 end
 
 function zoom_actions.audio_toggle()
-  zoom_actions.select_menu_items({"Mute Audio", "Unmute Audio"})
+  zoom_actions.select_menu_items({
+    "Mute audio",
+    "Mute Audio",
+    "Unmute audio",
+    "Unmute Audio"
+  })
 end
 
 function zoom_actions.camera_toggle()
@@ -102,6 +107,7 @@ end
 function zoom_actions.toggle_full_screen()
   zoom_actions.select_menu_items({
     {"Meeting", "Fullscreen"},
+    {"Meeting", "Exit fullscreen"},
     {"Meeting", "Exit Fullscreen"},
     {"Window", "Enter Full Screen"},
     {"Window", "Exit Full Screen"}
