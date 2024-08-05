@@ -23,6 +23,12 @@ function rpc.ssh(host, command, input, stdout_callback)
     {host, command})
   t:setInput(input)
   t:start()
+  -- Timeout - terminate if the task takes too long
+  hs.timer.doAfter(1, function()
+    if t and t:isRunning() then
+      t:terminate()
+    end
+  end)
 end
 
 function rpc.ssh_rpc(host, code, stdout_callback)
