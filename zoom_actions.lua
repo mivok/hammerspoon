@@ -64,26 +64,26 @@ function zoom_actions.audio_toggle()
 end
 
 function zoom_actions.camera_toggle()
-  zoom_actions.select_menu_items({"Stop Video", "Start Video"})
+  zoom_actions.select_menu_items({"Stop video", "Start video"})
 end
 
 function zoom_actions.share_toggle()
-  zoom_actions.select_menu_items({"Start Share", "Stop Share"})
+  zoom_actions.select_menu_items({"Start share", "Stop share"})
 end
 
 function zoom_actions.share_pause()
-  zoom_actions.select_menu_items({"Pause Share", "Unpause Share"})
+  zoom_actions.select_menu_items({"Pause share", "Unpause share"})
 end
 
 function zoom_actions.show_participants()
   zoom_actions.select_menu_items({
-    "Show Manage Participants",
-    "Close Manage Participants"
+    "Show manage participants",
+    "Close manage participants"
   })
 end
 
 function zoom_actions.show_chat()
-  zoom_actions.select_menu_items({"Show Chat", "Close Chat"})
+  zoom_actions.select_menu_items({"Show chat", "Close chat"})
 end
 
 -- Try to leave a zoom meeting, and show any prompt that will come up
@@ -108,7 +108,6 @@ function zoom_actions.toggle_full_screen()
   zoom_actions.select_menu_items({
     {"Meeting", "Fullscreen"},
     {"Meeting", "Exit fullscreen"},
-    {"Meeting", "Exit Fullscreen"},
     {"Window", "Enter Full Screen"},
     {"Window", "Exit Full Screen"}
   })
