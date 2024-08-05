@@ -67,11 +67,11 @@ function status_callbacks.zoom_menu(button, disabled_menu_item)
 end
 
 function status_callbacks.zoom_mute(button)
-  return status_callbacks.zoom_menu(button, "Unmute Audio")
+  return status_callbacks.zoom_menu(button, "Unmute audio")
 end
 
 function status_callbacks.zoom_camera(button)
-  return status_callbacks.zoom_menu(button, "Start Video")
+  return status_callbacks.zoom_menu(button, "Start video")
 end
 
 function status_callbacks.shush(button)
