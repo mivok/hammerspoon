@@ -115,8 +115,9 @@ end
 
 function zoom_actions.toggle_view()
   zoom_actions.select_menu_items({
-    {"Meeting", "Gallery View"},
-    {"Meeting", "Speaker View"}
+    {"Meeting", "Gallery view"},
+    {"Meeting", "Multi-speaker view"},
+    {"Meeting", "Speaker view"}
   })
 end
 
