@@ -31,7 +31,8 @@ end
 function status_callbacks.audio_headset(button)
   status_callbacks.audio_device(
     button,
-    "CalDigit Thunderbolt 3 Audio",
+    --"CalDigit Thunderbolt 3 Audio",
+    "USB Audio CODEC",
     "Antlion USB Microphone"
   )
 end
@@ -39,7 +40,8 @@ end
 function status_callbacks.audio_speaker(button)
   status_callbacks.audio_device(
     button,
-    "CalDigit Thunderbolt 3 Audio",
+    --"CalDigit Thunderbolt 3 Audio",
+    "USB Audio CODEC",
     "MacBook Pro Microphone"
   )
 end

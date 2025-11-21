@@ -16,7 +16,7 @@ function actions.sleep_screen()
 end
 
 function actions.reset_mic_volume()
-    level = 80
+    level = 90
     ad = hs.audiodevice.defaultInputDevice()
     if ad ~= nil then
         oldvol = math.floor(ad:inputVolume())
@@ -46,7 +46,8 @@ end
 
 function actions.audio_headset()
     switch_default_audio_devices(
-        "CalDigit Thunderbolt 3 Audio",
+        --"CalDigit Thunderbolt 3 Audio",
+        "USB Audio CODEC",
         "Antlion USB Microphone"
     )
 end
@@ -54,7 +55,8 @@ end
 function actions.audio_speaker()
     -- Switch audio to speakers
     switch_default_audio_devices(
-        "CalDigit Thunderbolt 3 Audio",
+        --"CalDigit Thunderbolt 3 Audio",
+        "USB Audio CODEC",
         "MacBook Pro Microphone"
     )
 end
@@ -226,5 +228,10 @@ function actions.get_clipboard(machine)
   end
 end
 
+function actions.open_url(url)
+  return function()
+    hs.execute("open " .. hs.http.encodeForQuery(url))
+  end
+end
 
 return actions
