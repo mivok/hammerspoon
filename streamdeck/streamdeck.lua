@@ -107,6 +107,9 @@ function streamdeck.updateStatusSoon()
   end
   streamdeck.quick_update_timer = hs.timer.doAfter(1,
     streamdeck.runUpdateCallbacks)
+  -- Also try running the update callback immediately to get a more immediate
+  -- response in the event the action is not slow
+  streamdeck.runUpdateCallbacks()
 end
 
 function streamdeck.deviceConnectedCallback(connected, sd)

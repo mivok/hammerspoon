@@ -78,7 +78,9 @@ end
 function zoom_actions.show_participants()
   zoom_actions.select_menu_items({
     "Show manage participants",
-    "Close manage participants"
+    "Show participants",
+    "Close manage participants",
+    "Close participants",
   })
 end
 
