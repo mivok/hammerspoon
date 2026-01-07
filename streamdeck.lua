@@ -6,6 +6,7 @@ local images = require("streamdeck/images")
 local actions = require("actions")
 local status_callbacks = require("status_callbacks")
 local zoom_actions = require("zoom_actions")
+local teams_actions = require("teams_actions")
 
 function app_button(bundleID)
   return {
@@ -76,8 +77,8 @@ local layers = {
       press_callback = actions.remote_syskeypress('personal', 'NEXT'),
     },
     {
-      image = images.imageFromText("3", "Layer"),
-      press_callback = streamdeck.changeLayerCallback('layer3')
+      image = images.imageWithLabel("teams_icon.png", "Teams", {scale=0.6}),
+      press_callback = streamdeck.changeLayerCallback('teams')
     },
   },
 
@@ -182,28 +183,59 @@ local layers = {
     },
   },
 
-  -- Layer 3
-  layer3 = {
+  -- Teams
+  teams = {
     -- Row 1
-    {},
-    {},
-    {},
-    {},
-    {},
+    {
+      passthrough = 'zoom'
+    },
+    { },
+    {
+      image = images.imageFromText("⤢", "Full Screen"),
+      press_callback = teams_actions.full_screen,
+    },
+    {
+    },
+    {
+    },
     -- Row 2
-    {},
-    {},
-    {},
-    {},
-    {},
-    -- Row 3
-    {},
-    {},
-    {},
-    {},
+    {
+      passthrough = 'zoom'
+    },
+    {
+      passthrough = 'zoom'
+    },
+    {
+
+      passthrough = 'zoom'
+    },
+    {
+    },
     {
       image = images.imageFromText("<", "Back"),
       press_callback = streamdeck.changeLayerCallback('default')
+    },
+    -- Row 3
+    {
+      -- Shush
+      passthrough = 'default'
+    },
+    {
+      image = images.imageWithLabel("zoom-mic.png", "Mic", {scale=0.70}),
+      press_callback = teams_actions.mic,
+    },
+    {
+      image = images.imageWithLabel("zoom-camera.png", "Camera", {scale=0.70}),
+      press_callback = teams_actions.camera,
+    },
+    {
+      image = images.imageWithLabel("zoom-share.png", "Share", {scale=0.70}),
+      press_callback = teams_actions.share,
+    },
+    {
+      image = images.imageFromText("x", "Leave",
+        {textColor=hs.drawing.color.hammerspoon.osx_red}),
+      press_callback = teams_actions.leave,
     },
   },
 
