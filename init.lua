@@ -16,6 +16,9 @@ rpc = require("rpc")
 -- Make callback actions accessible by the hs cli command for ipc purposes
 actions = require("actions")
 
+-- Set up push to talk
+ptt = require("ptt")
+
 ---- Automatically reload the config ----
 pw1 = hs.pathwatcher.new(hs.configdir, function(paths)
   for _, path in ipairs(paths) do

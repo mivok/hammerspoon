@@ -7,6 +7,7 @@ local actions = require("actions")
 local status_callbacks = require("status_callbacks")
 local zoom_actions = require("zoom_actions")
 local teams_actions = require("teams_actions")
+local ptt = require("ptt")
 
 function app_button(bundleID)
   return {
@@ -60,8 +61,8 @@ local layers = {
     {
       image = images.imageWithLabel('shush.png', 'Shush', {
         scale = 0.75, yoffset = 10}),
-      press_callback = actions.keydown("F13"),
-      release_callback = actions.keyup("F13"),
+      press_callback = ptt.ptt_press,
+      release_callback = ptt.ptt_release,
       update_callback = status_callbacks.shush,
     },
     {
