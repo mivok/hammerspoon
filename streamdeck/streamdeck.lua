@@ -42,24 +42,54 @@ function streamdeck.profileState(layoutKey)
   return streamdeck.profileStates[layoutKey]
 end
 
+-- Return persistent automation state for the active layout profile.
+function streamdeck.currentProfileState()
+  if not streamdeck.currentLayout then
+    return nil
+  end
+  return streamdeck.profileState(streamdeck.currentLayout)
+end
+
+-- Return the configured Stream Deck layer for an app name, if any.
+function streamdeck.appLayerForName(appName)
+  local profile = streamdeck.currentProfile()
+  if not profile or not profile.appLayers then
+    return nil
+  end
+
+  return profile.appLayers[appName]
+end
+
+-- Return a button from a layer without following passthrough entries.
+function streamdeck.rawButtonForLayer(layerName, idx)
+  local layer = streamdeck.layers[layerName] or {}
+  return layer[idx] or {}
+end
+
+-- Resolve a layer button, following passthrough entries when present.
+function streamdeck.buttonForLayer(layerName, idx)
+  local button = streamdeck.rawButtonForLayer(layerName, idx)
+  if button.passthrough then
+    button = streamdeck.rawButtonForLayer(button.passthrough, idx)
+  end
+
+  return button
+end
+
 -- Handle Stream Deck button presses and releases for the active device.
 function streamdeck.buttonCallback(sd, button_number, pressed)
   if streamdeck.isLocked or sd ~= streamdeck.device then
     return
   end
 
-  local layer = streamdeck.layers[streamdeck.currentLayer]
-  if not layer then
+  if not streamdeck.layers[streamdeck.currentLayer] then
     return
   end
 
-  local button = layer[button_number] or {}
-
-  -- Deal with passthrough buttons
-  if button.passthrough then
-    local passthroughLayer = streamdeck.layers[button.passthrough] or {}
-    button = passthroughLayer[button_number] or {}
-  end
+  local button = streamdeck.buttonForLayer(
+    streamdeck.currentLayer,
+    button_number
+  )
 
   if pressed and button.press_callback then
     button.press_callback()
@@ -74,12 +104,18 @@ end
 
 -- Return the frontmost app name if it has a layer mapping in this profile.
 function streamdeck.frontmostWatchedAppName()
-  local frontmostApp = hs.application.frontmostApplication()
-  local appName = frontmostApp and frontmostApp:name()
-  if streamdeck.appLayerForName(appName) then
+  local appName, appLayer = streamdeck.frontmostAppLayer()
+  if appLayer then
     return appName
   end
   return nil
+end
+
+-- Return the frontmost app name and configured layer, if mapped.
+function streamdeck.frontmostAppLayer()
+  local frontmostApp = hs.application.frontmostApplication()
+  local appName = frontmostApp and frontmostApp:name()
+  return appName, streamdeck.appLayerForName(appName)
 end
 
 -- Switch to a layer, optionally recording it as a manual layer choice.
@@ -91,17 +127,22 @@ function streamdeck.changeLayer(layer, options)
   end
 
   streamdeck.currentLayer = layer
-  for idx, button in ipairs(streamdeck.layers[streamdeck.currentLayer]) do
-    streamdeck.updateButtonImage(idx, button)
-  end
+  streamdeck.redrawCurrentLayer()
 
   if options.manual and streamdeck.currentLayout then
-    local state = streamdeck.profileState(streamdeck.currentLayout)
+    local state = streamdeck.currentProfileState()
     state.lastManualLayer = layer
     state.manualOverrideAppName = streamdeck.frontmostWatchedAppName()
   end
 
   return true
+end
+
+-- Render every button in the current layer.
+function streamdeck.redrawCurrentLayer()
+  for idx, button in ipairs(streamdeck.layers[streamdeck.currentLayer]) do
+    streamdeck.updateButtonImage(idx, button)
+  end
 end
 
 -- Render one button image, status image, or blank color to the device.
@@ -112,16 +153,13 @@ function streamdeck.updateButtonImage(idx, button)
   end
 
   button = button or {}
-
-  -- Deal with passthrough buttons
   if button.passthrough then
-    local passthroughLayer = streamdeck.layers[button.passthrough] or {}
-    button = passthroughLayer[idx] or {}
+    button = streamdeck.buttonForLayer(button.passthrough, idx)
   end
 
-  if button and button.status_image then
+  if button.status_image then
     streamdeck.device:setButtonImage(idx, button.status_image)
-  elseif button and button.image then
+  elseif button.image then
     streamdeck.device:setButtonImage(idx, button.image)
   else
     streamdeck.device:setButtonColor(idx, hs.drawing.color.hammerspoon.black)
@@ -136,8 +174,10 @@ function streamdeck.runUpdateCallbacks()
         local old_status_image = button.status_image
         button:update_callback()
         -- Update the button image it's visible and the image changed
-        local currentLayer = streamdeck.layers[streamdeck.currentLayer] or {}
-        local currentButton = currentLayer[idx] or {}
+        local currentButton = streamdeck.rawButtonForLayer(
+          streamdeck.currentLayer,
+          idx
+        )
         if currentButton.passthrough == layerid
           or layerid == streamdeck.currentLayer then
           if button.status_image ~= old_status_image then
@@ -216,50 +256,6 @@ function streamdeck.selectProfile(sd)
   return true
 end
 
--- Return the configured Stream Deck layer for an app name, if any.
-function streamdeck.appLayerForName(appName)
-  local profile = streamdeck.currentProfile()
-  if not profile or not profile.appLayers then
-    return nil
-  end
-
-  return profile.appLayers[appName]
-end
-
--- Reconcile the current layer against the actual frontmost application.
-function streamdeck.reconcileAppLayer()
-  if not streamdeck.device or not streamdeck.currentLayout then
-    return
-  end
-
-  local state = streamdeck.profileState(streamdeck.currentLayout)
-  local frontmostApp = hs.application.frontmostApplication()
-  local appName = frontmostApp and frontmostApp:name()
-  local appLayer = streamdeck.appLayerForName(appName)
-
-  if appLayer then
-    if state.manualOverrideAppName == appName then
-      return
-    end
-    if streamdeck.changeLayer(appLayer, {manual = false}) then
-      state.activeAppName = appName
-      state.manualOverrideAppName = nil
-    else
-      log.w("Ignoring missing app layer: " .. appLayer)
-    end
-    return
-  end
-
-  if state.activeAppName then
-    local profile = streamdeck.currentProfile()
-    local restoreLayer = state.lastManualLayer or profile.defaultLayer
-      or "default"
-    streamdeck.changeLayer(restoreLayer, {manual = false})
-    state.activeAppName = nil
-    state.manualOverrideAppName = nil
-  end
-end
-
 -- Debounce app layer reconciliation to avoid app event ordering flicker.
 function streamdeck.scheduleAppLayerReconcile()
   if streamdeck.app_reconcile_timer then
@@ -270,6 +266,46 @@ function streamdeck.scheduleAppLayerReconcile()
     streamdeck.app_reconcile_delay,
     streamdeck.reconcileAppLayer
   )
+end
+
+-- Apply an app-specific layer unless the user manually overrode it.
+function streamdeck.applyAppLayer(state, appName, appLayer)
+  if state.manualOverrideAppName == appName then
+    return
+  end
+
+  if streamdeck.changeLayer(appLayer, {manual = false}) then
+    state.activeAppName = appName
+    state.manualOverrideAppName = nil
+  else
+    log.w("Ignoring missing app layer: " .. appLayer)
+  end
+end
+
+-- Restore the last manual layer after leaving app-specific layer mode.
+function streamdeck.restoreManualLayer(state)
+  local profile = streamdeck.currentProfile()
+  local restoreLayer = state.lastManualLayer or profile.defaultLayer
+    or "default"
+  streamdeck.changeLayer(restoreLayer, {manual = false})
+  state.activeAppName = nil
+  state.manualOverrideAppName = nil
+end
+
+-- Reconcile the current layer against the actual frontmost application.
+function streamdeck.reconcileAppLayer()
+  if not streamdeck.device or not streamdeck.currentLayout then
+    return
+  end
+
+  local state = streamdeck.currentProfileState()
+  local appName, appLayer = streamdeck.frontmostAppLayer()
+
+  if appLayer then
+    streamdeck.applyAppLayer(state, appName, appLayer)
+  elseif state.activeAppName then
+    streamdeck.restoreManualLayer(state)
+  end
 end
 
 -- Start the application watcher that drives app-specific layer changes.
