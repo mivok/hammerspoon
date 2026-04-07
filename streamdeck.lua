@@ -294,9 +294,14 @@ streamdeck.init({
   ["5x3"] = {
     layers = fullSizeLayers,
     defaultLayer = "default",
+    appLayers = {
+      ["zoom.us"] = "zoom",
+      ["Microsoft Teams"] = "teams",
+    },
   },
   ["3x2"] = {
     layers = miniLayers,
     defaultLayer = "default",
+    appLayers = {},
   },
 })
