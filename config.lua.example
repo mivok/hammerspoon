@@ -5,7 +5,7 @@ return {
   machines = {
     work = 'work-machine',
     personal = 'personal-machine',
-  }
+  },
 
   -- Profile to use for aws sso login
   aws_sso_profile = 'myprofile'
