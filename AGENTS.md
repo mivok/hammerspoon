@@ -37,6 +37,7 @@ Core modules:
 
 - Keep modules small and callback-oriented. Most public module functions are stored on a module table and returned with `return module`.
 - For new or substantially touched non-vendored Lua code, use 2-space indentation.
+- Prefer a maximum line length of 79 characters in new or touched code.
 - Prefer double-quoted strings in new non-vendored Lua code. Use single quotes only when it materially improves readability by avoiding escapes.
 - Prefer `local` variables for new code. Only use globals intentionally when Hammerspoon objects must be retained beyond a module scope, such as timers/watchers that should not be garbage-collected.
 - Preserve watcher/timer lifetimes. Existing examples include `pw1`, `garbageTimer`, `audio.muteWatcherTimer`, and `M.enforcePTTTimer`.

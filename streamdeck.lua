@@ -9,14 +9,14 @@ local zoom_actions = require("zoom_actions")
 local teams_actions = require("teams_actions")
 local ptt = require("ptt")
 
-function app_button(bundleID)
+local function app_button(bundleID)
   return {
     image = hs.image.imageFromAppBundle(bundleID),
     press_callback = actions.toggle_application(bundleID),
   }
 end
 
-local layers = {
+local fullSizeLayers = {
   -- Layer 1 - Main layer
   default = {
     -- Row 1
@@ -127,7 +127,8 @@ local layers = {
       press_callback = zoom_actions.toggle_full_screen,
     },
     {
-      image = images.imageWithLabel("zoom-participants.png", "Participants", {scale=0.70}),
+      image = images.imageWithLabel("zoom-participants.png", "Participants",
+        {scale=0.70}),
       press_callback = zoom_actions.show_participants,
     },
     {
@@ -151,7 +152,8 @@ local layers = {
       update_callback = status_callbacks.audio_laptop,
     },
     {
-      image = images.imageWithLabel("zoom-pause.png", "Share Pause", {scale=0.50}),
+      image = images.imageWithLabel("zoom-pause.png", "Share Pause",
+        {scale=0.50}),
       press_callback = zoom_actions.share_pause,
     },
     {
@@ -263,4 +265,38 @@ local layers = {
   },
 }
 
-streamdeck.init(layers)
+local miniLayers = {
+  -- Stream Deck Mini: 2 rows by 3 columns.
+  default = {
+    -- Row 1
+    {},
+    {},
+    {},
+    -- Row 2
+    {},
+    {},
+    {},
+  },
+
+  blank = {
+    -- Row 1
+    {},
+    {},
+    {},
+    -- Row 2
+    {},
+    {},
+    {},
+  },
+}
+
+streamdeck.init({
+  ["5x3"] = {
+    layers = fullSizeLayers,
+    defaultLayer = "default",
+  },
+  ["3x2"] = {
+    layers = miniLayers,
+    defaultLayer = "default",
+  },
+})

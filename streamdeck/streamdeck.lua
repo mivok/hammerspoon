@@ -1,8 +1,11 @@
 local streamdeck = {}
+local log = hs.logger.new("streamdeck", "info")
 
 -- Streamdeck state
+streamdeck.profiles = {}
 streamdeck.layers = {}
-streamdeck.currentLayer = 'default'
+streamdeck.currentLayer = "default"
+streamdeck.currentLayout = nil
 streamdeck.device = nil
 streamdeck.update_timer = nil
 streamdeck.isLocked = false
@@ -15,15 +18,21 @@ function streamdeck.changeLayerCallback(layer)
 end
 
 function streamdeck.buttonCallback(sd, button_number, pressed)
-  if streamdeck.isLocked then
+  if streamdeck.isLocked or sd ~= streamdeck.device then
     return
   end
 
-  local button = streamdeck.layers[streamdeck.currentLayer][button_number]
+  local layer = streamdeck.layers[streamdeck.currentLayer]
+  if not layer then
+    return
+  end
+
+  local button = layer[button_number] or {}
 
   -- Deal with passthrough buttons
   if button.passthrough then
-    button = streamdeck.layers[button.passthrough][button_number]
+    local passthroughLayer = streamdeck.layers[button.passthrough] or {}
+    button = passthroughLayer[button_number] or {}
   end
 
   if pressed and button.press_callback then
@@ -32,12 +41,17 @@ function streamdeck.buttonCallback(sd, button_number, pressed)
     button.release_callback()
   end
 
-  -- Update button status after pressing any button, so we get a faster response
-  -- on button updates. Don't do it too quickly though.
+  -- Update button status after pressing any button, so we get a faster
+  -- response on button updates. Don't do it too quickly though.
   streamdeck.updateStatusSoon()
 end
 
 function streamdeck.changeLayer(layer)
+  if not streamdeck.layers[layer] then
+    log.w("Ignoring unknown Stream Deck layer: " .. tostring(layer))
+    return
+  end
+
   streamdeck.currentLayer = layer
   for idx, button in ipairs(streamdeck.layers[streamdeck.currentLayer]) do
     streamdeck.updateButtonImage(idx, button)
@@ -46,13 +60,16 @@ end
 
 function streamdeck.updateButtonImage(idx, button)
   -- Don't update any images if the screen is locked
-  if streamdeck.isLocked then
+  if streamdeck.isLocked or not streamdeck.device then
     return
   end
 
+  button = button or {}
+
   -- Deal with passthrough buttons
   if button.passthrough then
-    button = streamdeck.layers[button.passthrough][idx]
+    local passthroughLayer = streamdeck.layers[button.passthrough] or {}
+    button = passthroughLayer[idx] or {}
   end
 
   if button and button.status_image then
@@ -68,11 +85,13 @@ function streamdeck.runUpdateCallbacks()
   for layerid, layer in pairs(streamdeck.layers) do
     for idx, button in ipairs(layer) do
       if button.update_callback then
-        old_status_image = button.status_image
+        local old_status_image = button.status_image
         button:update_callback()
         -- Update the button image it's visible and the image changed
-        if streamdeck.layers[streamdeck.currentLayer][idx].passthrough ==
-          layerid or layerid == streamdeck.currentLayer then
+        local currentLayer = streamdeck.layers[streamdeck.currentLayer] or {}
+        local currentButton = currentLayer[idx] or {}
+        if currentButton.passthrough == layerid
+          or layerid == streamdeck.currentLayer then
           if button.status_image ~= old_status_image then
             streamdeck.updateButtonImage(idx, button)
           end
@@ -83,6 +102,7 @@ function streamdeck.runUpdateCallbacks()
 end
 
 function streamdeck.setupUpdateTimer()
+  streamdeck.cancelUpdateTimer()
   streamdeck.update_timer = hs.timer.doEvery(5, streamdeck.runUpdateCallbacks)
   -- Initial run
   streamdeck.runUpdateCallbacks()
@@ -93,13 +113,17 @@ function streamdeck.cancelUpdateTimer()
     streamdeck.update_timer:stop()
     streamdeck.update_timer = nil
   end
+  if streamdeck.quick_update_timer then
+    streamdeck.quick_update_timer:stop()
+    streamdeck.quick_update_timer = nil
+  end
 end
 
 function streamdeck.updateStatusSoon()
   -- Set up a one-shot timer to update status soon (after 1 second) that can be
   -- called after pressing a button to show any changes to the button status
-  -- that happen as a result of pressing the button. We use a timer because some
-  -- actions are a bit slow to actually show an update.
+  -- that happen as a result of pressing the button. We use a timer because
+  -- some actions are a bit slow to actually show an update.
   if streamdeck.quick_update_timer then
     -- Cancel any existing timer so we don't have lots of them if we press a
     -- button over and over
@@ -112,23 +136,60 @@ function streamdeck.updateStatusSoon()
   streamdeck.runUpdateCallbacks()
 end
 
+function streamdeck.layoutKey(sd)
+  local cols, rows = sd:buttonLayout()
+  return string.format("%dx%d", cols, rows)
+end
+
+function streamdeck.selectProfile(sd)
+  local layoutKey = streamdeck.layoutKey(sd)
+  local profile = streamdeck.profiles[layoutKey]
+
+  if not profile then
+    streamdeck.currentLayout = layoutKey
+    streamdeck.layers = {}
+    streamdeck.currentLayer = "default"
+    hs.alert.show("Unsupported Stream Deck layout: " .. layoutKey)
+    log.w("Unsupported Stream Deck layout: " .. layoutKey)
+    return false
+  end
+
+  streamdeck.currentLayout = layoutKey
+  streamdeck.layers = profile.layers or profile
+  streamdeck.currentLayer = profile.defaultLayer or "default"
+  log.i("Using Stream Deck layout: " .. layoutKey)
+  return true
+end
+
 function streamdeck.deviceConnectedCallback(connected, sd)
   if connected then
     streamdeck.device = sd
   else
-    streamdeck.device = nil
-    streamdeck.cancelUpdateTimer()
+    if sd == streamdeck.device then
+      streamdeck.device = nil
+      streamdeck.layers = {}
+      streamdeck.currentLayout = nil
+      streamdeck.cancelUpdateTimer()
+    end
     return
   end
 
-  streamdeck.changeLayer('default')
+  if not streamdeck.selectProfile(sd) then
+    return
+  end
+
+  streamdeck.changeLayer(streamdeck.currentLayer)
   streamdeck.setupUpdateTimer()
   streamdeck.setupLockScreenMonitoring()
   sd:buttonCallback(streamdeck.buttonCallback)
 end
 
 function streamdeck.blankScreen()
-  local rows, cols = streamdeck.device:buttonLayout()
+  if not streamdeck.device then
+    return
+  end
+
+  local cols, rows = streamdeck.device:buttonLayout()
   local numButtons = rows * cols
   for idx = 1,numButtons do
     streamdeck.device:setButtonColor(idx, hs.drawing.color.hammerspoon.black)
@@ -146,7 +207,8 @@ end
 
 function streamdeck.setupLockScreenMonitoring()
   -- Set initial state
-  streamdeck.updateScreenLocked(hs.caffeinate.sessionProperties(). CGSSessionScreenIsLocked)
+  local sessionProperties = hs.caffeinate.sessionProperties()
+  streamdeck.updateScreenLocked(sessionProperties.CGSSessionScreenIsLocked)
   -- Start the watcher
   if not streamdeck.caffeinateWatcher then
     streamdeck.caffeinateWatcher = hs.caffeinate.watcher.new(function(e)
@@ -160,8 +222,8 @@ function streamdeck.setupLockScreenMonitoring()
   end
 end
 
-function streamdeck.init(layers)
-  streamdeck.layers = layers
+function streamdeck.init(profiles)
+  streamdeck.profiles = profiles
   hs.streamdeck.init(streamdeck.deviceConnectedCallback)
 end
 
