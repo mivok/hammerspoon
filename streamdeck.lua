@@ -66,16 +66,12 @@ local fullSizeLayers = {
       update_callback = status_callbacks.shush,
     },
     {
-      image = images.imageFromText('⏮︎ ', 'Prev'),
-      press_callback = actions.remote_syskeypress('personal', 'PREVIOUS'),
+      image = images.imageFromText('🔇', 'PTT'),
+      press_callback = ptt.togglePTTMode,
     },
     {
-      image = images.imageFromText('⏯︎ ', 'Play'),
-      press_callback = actions.remote_syskeypress('personal', 'PLAY'),
     },
     {
-      image = images.imageFromText('⏭︎ ', 'Next'),
-      press_callback = actions.remote_syskeypress('personal', 'NEXT'),
     },
     {
       image = images.imageWithLabel("teams_icon.png", "Teams", {scale=0.6}),
@@ -152,9 +148,8 @@ local fullSizeLayers = {
       update_callback = status_callbacks.audio_laptop,
     },
     {
-      image = images.imageWithLabel("zoom-pause.png", "Share Pause",
-        {scale=0.50}),
-      press_callback = zoom_actions.share_pause,
+      image = images.imageWithLabel("zoom-share.png", "Share", {scale=0.70}),
+      press_callback = zoom_actions.share_toggle,
     },
     {
       image = images.imageFromText("<", "Back"),
@@ -166,6 +161,10 @@ local fullSizeLayers = {
       passthrough = 'default'
     },
     {
+      -- Shush toggle
+      passthrough = 'default'
+    },
+    {
       image = images.imageWithLabel("zoom-mic.png", "Mute", {scale=0.70}),
       press_callback = zoom_actions.audio_toggle,
       update_callback = status_callbacks.zoom_mute,
@@ -174,10 +173,6 @@ local fullSizeLayers = {
       image = images.imageWithLabel("zoom-camera.png", "Camera", {scale=0.70}),
       press_callback = zoom_actions.camera_toggle,
       update_callback = status_callbacks.zoom_camera,
-    },
-    {
-      image = images.imageWithLabel("zoom-share.png", "Share", {scale=0.70}),
-      press_callback = zoom_actions.share_toggle,
     },
     {
       image = images.imageFromText("x", "Leave",
@@ -209,10 +204,11 @@ local fullSizeLayers = {
       passthrough = 'zoom'
     },
     {
-
       passthrough = 'zoom'
     },
     {
+      image = images.imageWithLabel("zoom-share.png", "Share", {scale=0.70}),
+      press_callback = teams_actions.share,
     },
     {
       image = images.imageFromText("<", "Back"),
@@ -224,16 +220,16 @@ local fullSizeLayers = {
       passthrough = 'default'
     },
     {
+      -- Shush toggle
+      passthrough = 'default'
+    },
+    {
       image = images.imageWithLabel("zoom-mic.png", "Mic", {scale=0.70}),
       press_callback = teams_actions.mic,
     },
     {
       image = images.imageWithLabel("zoom-camera.png", "Camera", {scale=0.70}),
       press_callback = teams_actions.camera,
-    },
-    {
-      image = images.imageWithLabel("zoom-share.png", "Share", {scale=0.70}),
-      press_callback = teams_actions.share,
     },
     {
       image = images.imageFromText("x", "Leave",

@@ -74,6 +74,30 @@ function M.ptt_release()
   M.muted = M.ptt
 end
 
+-- Change PTT mode - pushToTalk or pushToMute
+function M.setPTTMode(ptt_enabled)
+  M.ptt = ptt_enabled
+  ptt_toggle_sound:play()
+  -- Actually mute the decice
+  local device = hs.audiodevice.defaultInputDevice()
+  device:setMuted(M.ptt)
+  audio.updateMuteStatus(device:muted())
+  M.muted = M.ptt
+end
+
+function M.pushToTalk()
+  M.setPTTMode(true)
+end
+
+function M.pushToMute()
+  M.setPTTMode(false)
+end
+
+function M.togglePTTMode()
+  M.setPTTMode(not M.ptt)
+end
+
+
 -- Set up  push to talk key. Hold down to talk, release to mute. If double tap,
 -- toggle between push to talk and push to mute.
 function M.setupPTTHotkey(mods, key)
