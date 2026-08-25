@@ -69,22 +69,22 @@ function actions.audio_laptop()
     )
 end
 
-function actions.keydown(key)
+function actions.keydown(modifiers, key)
   return function()
-    hs.eventtap.event.newKeyEvent(key, true):post()
+    hs.eventtap.event.newKeyEvent(modifiers, key, true):post()
   end
 end
 
-function actions.keyup(key)
+function actions.keyup(modifiers, key)
   return function()
-    hs.eventtap.event.newKeyEvent(key, false):post()
+    hs.eventtap.event.newKeyEvent(modifiers, key, false):post()
   end
 end
 
-function actions.keypress(key)
+function actions.keypress(modifiers, key)
   return function()
-    actions.keydown(key)()
-    actions.keyup(key)()
+    actions.keydown(modifiers, key)()
+    actions.keyup(modifiers, key)()
   end
 end
 

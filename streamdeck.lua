@@ -265,13 +265,31 @@ local miniLayers = {
   -- Stream Deck Mini: 2 rows by 3 columns.
   default = {
     -- Row 1
-    {},
-    {},
-    {},
+    {
+      image = images.imageFromText("<", "", {yoffset=0}),
+      press_callback = actions.keypress({"shift"}, ","),
+    },
+    {
+      image = images.imageFromText(">", "", {yoffset=0}),
+      press_callback = actions.keypress({"shift"}, "."),
+    },
+    {
+      image = images.imageFromText("🔒", "", {yoffset=0}),
+      press_callback = actions.sleep_screen,
+    },
     -- Row 2
-    {},
-    {},
-    {},
+    {
+      image = images.imageFromText("⬅", ""),
+      press_callback = actions.keypress({""}, "LEFT"),
+    },
+    {
+      image = images.imageFromText("⮕", ""),
+      press_callback = actions.keypress({}, "RIGHT"),
+    },
+    {
+      image = images.imageFromText('⏯︎ '),
+      press_callback = actions.keypress({}, "K"),
+    },
   },
 
   blank = {
