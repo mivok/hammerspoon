@@ -134,18 +134,14 @@ local fullSizeLayers = {
     -- Row 2
     {
       image = images.imageFromText("🎧", "Headset"),
-      press_callback = actions.audio_headset,
-      update_callback = status_callbacks.audio_headset,
+      press_callback = actions.audio_device("headset"),
+      update_callback = status_callbacks.audio_device("headset"),
     },
-    {
-      image = images.imageFromText("🔈", "Speaker"),
-      press_callback = actions.audio_speaker,
-      update_callback = status_callbacks.audio_speaker,
-    },
+    {},
     {
       image = images.imageFromText("💻", "Laptop Speaker"),
-      press_callback = actions.audio_laptop,
-      update_callback = status_callbacks.audio_laptop,
+      press_callback = actions.audio_device("laptop"),
+      update_callback = status_callbacks.audio_device("laptop"),
     },
     {
       image = images.imageWithLabel("zoom-share.png", "Share", {scale=0.70}),

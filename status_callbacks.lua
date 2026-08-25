@@ -1,4 +1,5 @@
 local images = require("streamdeck/images")
+local audio_devices = require("audio_devices")
 
 -- Status update callbacks for streamdeck buttons
 local status_callbacks = {}
@@ -19,39 +20,14 @@ function status_callbacks.selectedImage(image)
 end
 
 -- Audio device callbacks
-function status_callbacks.audio_device(button, output, input)
-  if hs.audiodevice.defaultInputDevice():name() == input and
-    hs.audiodevice.defaultOutputDevice():name() == output then
-    button.status_image = status_callbacks.selectedImage(button.image)
-  else
-    button.status_image = nil
+function status_callbacks.audio_device(preset_name)
+  return function(button)
+    if audio_devices.is_active(preset_name) then
+      button.status_image = status_callbacks.selectedImage(button.image)
+    else
+      button.status_image = nil
+    end
   end
-end
-
-function status_callbacks.audio_headset(button)
-  status_callbacks.audio_device(
-    button,
-    --"CalDigit Thunderbolt 3 Audio",
-    "USB Audio CODEC",
-    "Antlion USB Microphone"
-  )
-end
-
-function status_callbacks.audio_speaker(button)
-  status_callbacks.audio_device(
-    button,
-    --"CalDigit Thunderbolt 3 Audio",
-    "USB Audio CODEC",
-    "MacBook Pro Microphone"
-  )
-end
-
-function status_callbacks.audio_laptop(button)
-  status_callbacks.audio_device(
-    button,
-    "MacBook Pro Speakers",
-    "MacBook Pro Microphone"
-  )
 end
 
 -- Zoom callbacks
