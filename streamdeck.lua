@@ -163,12 +163,12 @@ local fullSizeLayers = {
     {
       image = images.imageWithLabel("zoom-mic.png", "Mute", {scale=0.70}),
       press_callback = zoom_actions.audio_toggle,
-      update_callback = status_callbacks.zoom_mute,
+      --update_callback = status_callbacks.zoom_mute,
     },
     {
       image = images.imageWithLabel("zoom-camera.png", "Camera", {scale=0.70}),
       press_callback = zoom_actions.camera_toggle,
-      update_callback = status_callbacks.zoom_camera,
+      --update_callback = status_callbacks.zoom_camera,
     },
     {
       image = images.imageFromText("x", "Leave",
