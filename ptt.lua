@@ -118,7 +118,7 @@ function M.enforcePTTHandler()
   end
 end
 
-  -- Check every second for changes to mute status
+-- Check every second for changes to mute status
 M.enforcePTTTimer = hs.timer.doEvery(1, M.enforcePTTHandler)
 
 return M
