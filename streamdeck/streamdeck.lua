@@ -1,5 +1,6 @@
 local streamdeck = {}
-local log = hs.logger.new("streamdeck", "info")
+local log_level = "info" -- Change to debug for profiling
+local log = hs.logger.new("streamdeck", log_level)
 
 -- Streamdeck state
 streamdeck.profiles = {}
@@ -167,12 +168,30 @@ function streamdeck.updateButtonImage(idx, button)
 end
 
 -- Run every button status callback and update visible changed buttons.
-function streamdeck.runUpdateCallbacks()
+local updateCount = 0
+local lastStart = nil
+function streamdeck.runUpdateCallbacks(reason)
+  local now = hs.timer.absoluteTime()
+
+  local sinceLast
+  if lastStart then
+      sinceLast = (now - lastStart) / 1e6
+  end
+
+  lastStart = now
+  updateCount = updateCount + 1
+
+  local start = now
+
   for layerid, layer in pairs(streamdeck.layers) do
     for idx, button in ipairs(layer) do
       if button.update_callback then
         local old_status_image = button.status_image
+        local callback_start = hs.timer.absoluteTime()
         button:update_callback()
+        local elapsed = (hs.timer.absoluteTime() - callback_start) / 1e6
+        log.df("[Button callback] layer=%-10s button=%-2s time=%4.0f ms",
+            layerid, idx, elapsed)
         -- Update the button image it's visible and the image changed
         local currentButton = streamdeck.rawButtonForLayer(
           streamdeck.currentLayer,
@@ -187,14 +206,24 @@ function streamdeck.runUpdateCallbacks()
       end
     end
   end
+
+  local elapsed = (hs.timer.absoluteTime() - start) / 1e6
+
+  log.df("[updateStatusCallbacks] #%d (%-12s) duration=%.0f ms interval=%s ms",
+      updateCount,
+      reason,
+      elapsed,
+      sinceLast and string.format("%.0f ms", sinceLast) or "n/a"
+  )
 end
 
 -- Start the recurring status update timer for the active device.
 function streamdeck.setupUpdateTimer()
   streamdeck.cancelUpdateTimer()
-  streamdeck.update_timer = hs.timer.doEvery(5, streamdeck.runUpdateCallbacks)
+  streamdeck.update_timer = hs.timer.doEvery(5,
+    function() streamdeck.runUpdateCallbacks("timer") end)
   -- Initial run
-  streamdeck.runUpdateCallbacks()
+  streamdeck.runUpdateCallbacks("setup-update-timer-immediate")
 end
 
 -- Stop pending status update timers.
@@ -221,10 +250,10 @@ function streamdeck.updateStatusSoon()
     streamdeck.quick_update_timer:stop()
   end
   streamdeck.quick_update_timer = hs.timer.doAfter(1,
-    streamdeck.runUpdateCallbacks)
+    function() streamdeck.runUpdateCallbacks("button-delayed") end)
   -- Also try running the update callback immediately to get a more immediate
   -- response in the event the action is not slow
-  streamdeck.runUpdateCallbacks()
+  streamdeck.runUpdateCallbacks("button-immediate")
 end
 
 -- Return a layout key like "5x3" for a connected Stream Deck.
