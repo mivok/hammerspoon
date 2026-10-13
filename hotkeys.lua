@@ -13,6 +13,7 @@ hs.hotkey.bind({}, "F14", actions.reset_mic_volume)
 hs.hotkey.bind({}, "F15", actions.pause_music)
 hs.hotkey.bind({}, "F19", actions.audio_device("headset"))
 
+
 -- Hyper key (caps lock) bindings
 local hyper_mods = {"ctrl", "alt", "cmd", "shift"}
 function hyper_bind(key, callback)
@@ -23,3 +24,9 @@ ptt.setupPTTHotkey(hyper_mods, "A")
 hyper_bind("L", actions.sleep_screen)
 hyper_bind("P", actions.pause_music)
 hyper_bind("H", actions.audio_device("headset"))
+
+-- Date snippets
+local function type_date()
+    hs.eventtap.keyStrokes(os.date("%Y-%m-%d"))
+end
+hs.hotkey.bind({"ctrl", "alt"}, "D", type_date)
