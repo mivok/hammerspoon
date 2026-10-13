@@ -66,7 +66,7 @@ local fullSizeLayers = {
       update_callback = status_callbacks.shush,
     },
     {
-      image = images.imageFromText('🔇', 'PTT'),
+      image = images.imageFromText('🔘', 'PTT'),
       press_callback = ptt.togglePTTMode,
     },
     {
