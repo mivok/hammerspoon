@@ -30,28 +30,6 @@ function status_callbacks.audio_device(preset_name)
   end
 end
 
--- Zoom callbacks
-function status_callbacks.zoom_menu(button, disabled_menu_item)
-  -- disabled menu item should be the item that is shown in the menu when the
-  -- relevant button is disabled (e.g. you are muted or the camera is off). If
-  -- this menu item is present, then a disabled overlay will be shown over the
-  -- icon
-  local app = hs.application.find("zoom.us")
-  if app and app:findMenuItem(disabled_menu_item) then
-    button.status_image = status_callbacks.disabledImage(button.image)
-  else
-    button.status_image = nil
-  end
-end
-
-function status_callbacks.zoom_mute(button)
-  return status_callbacks.zoom_menu(button, "Unmute audio")
-end
-
-function status_callbacks.zoom_camera(button)
-  return status_callbacks.zoom_menu(button, "Start video")
-end
-
 function status_callbacks.shush(button)
   if hs.audiodevice.defaultInputDevice():muted() then
     button.status_image = status_callbacks.disabledImage(button.image)
