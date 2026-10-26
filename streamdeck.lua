@@ -22,7 +22,7 @@ local fullSizeLayers = {
     -- Row 1
     {
       image = images.imageFromText("🔒", "", {yoffset=0}),
-      press_callback = actions.sleep_screen,
+      press_callback = actions.lock_screen,
     },
     {
       image = images.imageWithLabel("aws.png", "AWS Login"),
@@ -269,7 +269,7 @@ local miniLayers = {
     },
     {
       image = images.imageFromText("🔒", "", {yoffset=0}),
-      press_callback = actions.sleep_screen,
+      press_callback = actions.lock_screen,
     },
     -- Row 2
     {

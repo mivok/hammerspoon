@@ -3,7 +3,7 @@ local actions = require("actions")
 local ptt = require("ptt")
 
 -- Normal hotkeys
-hs.hotkey.bind({"cmd", "alt"}, "L", actions.sleep_screen)
+hs.hotkey.bind({"cmd", "alt"}, "L", actions.lock_screen)
 
 -- Launchpad hotkeys (Keys are mapped from F13-F20)
 -- Note: F13-F15 are also Pause, Scroll Lock, Print Screen on PC keyboards
@@ -21,7 +21,7 @@ function hyper_bind(key, callback)
 end
 
 ptt.setupPTTHotkey(hyper_mods, "A")
-hyper_bind("L", actions.sleep_screen)
+hyper_bind("L", actions.lock_screen)
 hyper_bind("P", actions.pause_music)
 hyper_bind("H", actions.audio_device("headset"))
 

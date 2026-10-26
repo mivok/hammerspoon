@@ -17,6 +17,12 @@ function actions.sleep_screen()
     hs.task.new("/usr/bin/pmset", nil, {"displaysleepnow"}):start()
 end
 
+function actions.lock_screen()
+    -- Mac lock screen shortcut
+    hs.alert.show("Lock screen")
+    hs.eventtap.keyStroke({"ctrl", "cmd"}, "q")
+end
+
 function actions.reset_mic_volume()
     level = 90
     ad = hs.audiodevice.defaultInputDevice()
