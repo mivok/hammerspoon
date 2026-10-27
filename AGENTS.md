@@ -8,7 +8,7 @@ This repo is a personal Hammerspoon configuration. `init.lua` is the entry point
 
 Core modules:
 
-- `init.lua`: bootstraps Fennel support, private config, modules, auto-reload, and a garbage-collection timer.
+- `init.lua`: loads the private config and modules, starts auto-reload, and sets a garbage-collection timer.
 - `actions.lua`: shared callbacks for hotkeys and Stream Deck buttons, including audio device switching, app toggles, AWS login helpers, remote actions, and clipboard sync.
 - `hotkeys.lua`: keyboard bindings, including Launchpad F13-F20 and Hyper key bindings.
 - `ptt.lua`: push-to-talk / push-to-mute behavior and mute-state enforcement.
@@ -20,7 +20,6 @@ Core modules:
 - `zoom_actions.lua` and `teams_actions.lua`: meeting app controls.
 - `rpc.lua`: remote Hammerspoon execution over SSH and `hs.ipc`.
 - `windowmanage.lua`: Hyper key window movement helpers.
-- `fennel.lua`: vendored Fennel runtime. Avoid editing unless explicitly updating the vendored copy.
 
 ## Runtime Assumptions
 
@@ -36,13 +35,12 @@ Core modules:
 ## Conventions
 
 - Keep modules small and callback-oriented. Most public module functions are stored on a module table and returned with `return module`.
-- For new or substantially touched non-vendored Lua code, use 2-space indentation.
-- Prefer a maximum line length of 79 characters in new or touched code.
-- Prefer double-quoted strings in new non-vendored Lua code. Use single quotes only when it materially improves readability by avoiding escapes.
+- Format Lua code with StyLua. The repository's `stylua.toml` sets two-space
+  indentation, a 79-character column width, and a preference for double quotes.
 - Prefer `local` variables for new code. Only use globals intentionally when Hammerspoon objects must be retained beyond a module scope, such as timers/watchers that should not be garbage-collected.
 - Preserve watcher/timer lifetimes. Existing examples include `pw1`, `garbageTimer`, `audio.muteWatcherTimer`, and `M.enforcePTTTimer`.
 - Stream Deck layers are 3 rows by 5 columns and are represented as flat row-major arrays of 15 button tables.
-- Empty Stream Deck buttons are `{}`. Use `passthrough = '<layer>'` to reuse a button from another layer.
+- Empty Stream Deck buttons are `{}`. Use `passthrough = "<layer>"` to reuse a button from another layer.
 - Stream Deck buttons commonly use `image`, `press_callback`, `release_callback`, and `update_callback`.
 - Status callbacks mutate `button.status_image`; `streamdeck/streamdeck.lua` decides whether to render `status_image`, `image`, or a black button.
 - Meeting controls rely on app names and menu items that can change between app versions. When changing Zoom or Teams behavior, include fallbacks for alternate capitalization or menu paths where practical.
@@ -50,7 +48,21 @@ Core modules:
 
 ## Validation
 
-There is no project test suite or formatter configured.
+There is no project test suite.
+
+Format Lua code with:
+
+```sh
+stylua .
+```
+
+Check formatting without changing files with:
+
+```sh
+stylua --check .
+```
+
+If StyLua is unavailable, ask the user to install it; do not install it yourself.
 
 Basic syntax check for tracked Lua modules:
 
@@ -74,7 +86,6 @@ Manual validation options:
 ## Safe Editing Notes
 
 - Do not edit `.codex` unless explicitly asked; it may be local agent metadata.
-- Treat `fennel.lua` as vendored code. Do not apply repository style conventions to it, and avoid editing it unless explicitly updating the vendored copy.
 - Do not commit private machine names, AWS profiles, or secrets. Keep private values in `~/.config/hammerspoon/config.lua`; use `config.lua.example` only for placeholders.
 - Be careful with `actions.get_clipboard` and `actions.send_clipboard`: they construct remote code strings and intentionally encode clipboard text to avoid quoting issues.
 - Be careful with `actions.open_url`: it shells out through `open`; preserve URL encoding if changing it.

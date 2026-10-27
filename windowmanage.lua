@@ -1,7 +1,10 @@
 -- Shortcut for binding the hyper key
 local function hyper_bind(key, description, callback)
   return hs.hotkey.bind(
-    {"ctrl", "alt", "cmd", "shift"}, key, description, callback
+    { "ctrl", "alt", "cmd", "shift" },
+    key,
+    description,
+    callback
   )
 end
 
@@ -10,22 +13,22 @@ end
 -- to move the bottom right corner of the window rather than top left (so you
 -- can specify 1 as x or y to move the window to the bottom or right of the
 -- screen). The bottom_right parameter is optional.
-function move_window(x, y, w, h, bottom_right)
-    window = hs.window.focusedWindow()
-    location = window:frame():toUnitRect(window:screen():frame())
-    location.x = x or location.x
-    location.y = y or location.y
-    location.w = w or location.w
-    location.h = h or location.h
-    -- Allow the x and y location to be relative to the bottom right of the
-    -- window
-    if bottom_right and x then
-        location.x = location.x - location.w
-    end
-    if bottom_right and y then
-        location.y = location.y - location.h
-    end
-    window:moveToUnit(location)
+local function move_window(x, y, w, h, bottom_right)
+  local window = hs.window.focusedWindow()
+  local location = window:frame():toUnitRect(window:screen():frame())
+  location.x = x or location.x
+  location.y = y or location.y
+  location.w = w or location.w
+  location.h = h or location.h
+  -- Allow the x and y location to be relative to the bottom right of the
+  -- window
+  if bottom_right and x then
+    location.x = location.x - location.w
+  end
+  if bottom_right and y then
+    location.y = location.y - location.h
+  end
+  window:moveToUnit(location)
 end
 
 -- Make window fill the width of the screen (for vertical monitor)

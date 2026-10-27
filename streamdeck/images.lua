@@ -4,11 +4,11 @@ local buttonWidth = 96
 local buttonHeight = 96
 
 -- Shared canvas for streamdeck button images
-local sharedCanvas = hs.canvas.new{ w = buttonWidth, h = buttonHeight }
+local sharedCanvas = hs.canvas.new({ w = buttonWidth, h = buttonHeight })
 
 -- Colors for use with streamdeck buttons
 local colors = hs.drawing.color.lists()
-local defaultTextColor = colors['Crayons']['Silver']
+local defaultTextColor = colors["Crayons"]["Silver"]
 local defaultTextFont = ".AppleSystemUIFont"
 
 -- Given a series of elements, return a button image
@@ -22,9 +22,9 @@ end
 function images.imageLabel(label, options)
   local options = options or {}
   local label = label or ""
-  textColor = options['textColor'] or defaultTextColor
-  font = options['labelFont'] or defaultTextFont
-  labelFontSize = options['labelFontSize'] or 14
+  textColor = options["textColor"] or defaultTextColor
+  font = options["labelFont"] or defaultTextFont
+  labelFontSize = options["labelFontSize"] or 14
 
   return {
     type = "text",
@@ -42,10 +42,10 @@ end
 -- Create a frame for an image, taking into account scaling and offset options
 function images.scaledFrame(options)
   local options = options or {}
-  scale = options['scale'] or 1.0
-  xoffset = options['xoffset'] or 0
+  scale = options["scale"] or 1.0
+  xoffset = options["xoffset"] or 0
   -- Set a default y offset to have the image clear any label that's displayed
-  yoffset = options['yoffset'] or 8
+  yoffset = options["yoffset"] or 8
 
   return {
     x = xoffset + (buttonWidth - (buttonWidth * scale)) / 2,
@@ -60,9 +60,9 @@ end
 -- All optional.
 function images.imageFromText(text, label, options)
   local options = options or {}
-  textColor = options['textColor'] or defaultTextColor
-  font = options['font'] or ".AppleSystemUIFont"
-  fontSize = options['fontSize'] or 70
+  textColor = options["textColor"] or defaultTextColor
+  font = options["font"] or ".AppleSystemUIFont"
+  fontSize = options["fontSize"] or 70
   return images.imageFromElements({
     {
       frame = images.scaledFrame(options),
@@ -85,20 +85,20 @@ function images.imageWithLabel(path, label, options)
       image = hs.image.imageFromPath(hs.configdir .. "/images/" .. path),
       -- imageScaling = "scaleToFit",
     },
-    images.imageLabel(label, options)
+    images.imageLabel(label, options),
   })
 end
 
 function images.overlayText(image, text, options)
   -- Takes an existing image and adds the text as an overlay
   local options = options or {}
-  textColor = options['textColor'] or defaultTextColor
-  font = options['font'] or ".AppleSystemUIFont"
-  fontSize = options['fontSize'] or 70
+  textColor = options["textColor"] or defaultTextColor
+  font = options["font"] or ".AppleSystemUIFont"
+  fontSize = options["fontSize"] or 70
   return images.imageFromElements({
     {
       type = "image",
-      image = image
+      image = image,
     },
     {
       frame = images.scaledFrame(options),
@@ -108,7 +108,7 @@ function images.overlayText(image, text, options)
         color = textColor,
       }),
       type = "text",
-    }
+    },
   })
 end
 

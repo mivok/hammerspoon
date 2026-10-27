@@ -6,17 +6,19 @@ local status_callbacks = {}
 
 -- Image overlay functions
 function status_callbacks.disabledImage(image)
-  return images.overlayText(image, "X",
-  {textColor=hs.drawing.color.hammerspoon.osx_red,
-  fontSize=90,
-  yoffset=0})
+  return images.overlayText(image, "X", {
+    textColor = hs.drawing.color.hammerspoon.osx_red,
+    fontSize = 90,
+    yoffset = 0,
+  })
 end
 
 function status_callbacks.selectedImage(image)
-  return images.overlayText(image, "▢",
-  {textColor=hs.drawing.color.hammerspoon.osx_green,
-  fontSize=90,
-  yoffset=-5})
+  return images.overlayText(image, "▢", {
+    textColor = hs.drawing.color.hammerspoon.osx_green,
+    fontSize = 90,
+    yoffset = -5,
+  })
 end
 
 -- Audio device callbacks

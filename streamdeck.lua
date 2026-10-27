@@ -21,7 +21,7 @@ local fullSizeLayers = {
   default = {
     -- Row 1
     {
-      image = images.imageFromText("🔒", "", {yoffset=0}),
+      image = images.imageFromText("🔒", "", { yoffset = 0 }),
       press_callback = actions.lock_screen,
     },
     {
@@ -29,24 +29,22 @@ local fullSizeLayers = {
       press_callback = actions.aws_sso_login,
     },
     {
-      image = images.overlayText(images.imageFromText("📋", "Get"),
-        "<", {
-          textColor=hs.drawing.color.hammerspoon.black,
-          yoffset=5,
-        }),
-      press_callback = actions.get_clipboard('personal'),
+      image = images.overlayText(images.imageFromText("📋", "Get"), "<", {
+        textColor = hs.drawing.color.hammerspoon.black,
+        yoffset = 5,
+      }),
+      press_callback = actions.get_clipboard("personal"),
     },
     {
-      image = images.overlayText(images.imageFromText("📋", "Send"),
-        ">", {
-          textColor=hs.drawing.color.hammerspoon.black,
-          yoffset=5,
-        }),
-      press_callback = actions.send_clipboard('personal'),
+      image = images.overlayText(images.imageFromText("📋", "Send"), ">", {
+        textColor = hs.drawing.color.hammerspoon.black,
+        yoffset = 5,
+      }),
+      press_callback = actions.send_clipboard("personal"),
     },
     {
       image = images.imageFromText("2", "Layer"),
-      press_callback = streamdeck.changeLayerCallback('layer2')
+      press_callback = streamdeck.changeLayerCallback("layer2"),
     },
     -- Row 2
     {},
@@ -54,28 +52,32 @@ local fullSizeLayers = {
     {},
     {},
     {
-      image = images.imageWithLabel("zoom.png", "Zoom", {scale=0.6}),
-      press_callback = streamdeck.changeLayerCallback('zoom')
+      image = images.imageWithLabel("zoom.png", "Zoom", { scale = 0.6 }),
+      press_callback = streamdeck.changeLayerCallback("zoom"),
     },
     -- Row 3
     {
-      image = images.imageWithLabel('shush.png', 'Shush', {
-        scale = 0.75, yoffset = 10}),
+      image = images.imageWithLabel("shush.png", "Shush", {
+        scale = 0.75,
+        yoffset = 10,
+      }),
       press_callback = ptt.ptt_press,
       release_callback = ptt.ptt_release,
       update_callback = status_callbacks.shush,
     },
     {
-      image = images.imageFromText('🔘', 'PTT'),
+      image = images.imageFromText("🔘", "PTT"),
       press_callback = ptt.togglePTTMode,
     },
+    {},
+    {},
     {
-    },
-    {
-    },
-    {
-      image = images.imageWithLabel("teams_icon.png", "Teams", {scale=0.6}),
-      press_callback = streamdeck.changeLayerCallback('teams')
+      image = images.imageWithLabel(
+        "teams_icon.png",
+        "Teams",
+        { scale = 0.6 }
+      ),
+      press_callback = streamdeck.changeLayerCallback("teams"),
     },
   },
 
@@ -88,7 +90,7 @@ local fullSizeLayers = {
     {},
     {
       image = images.imageFromText("<", "Back"),
-      press_callback = streamdeck.changeLayerCallback('default')
+      press_callback = streamdeck.changeLayerCallback("default"),
     },
     -- Row 2
     {},
@@ -99,12 +101,12 @@ local fullSizeLayers = {
     -- Row 3
     {
       -- Shush
-      passthrough = 'default'
+      passthrough = "default",
     },
-    app_button('com.apple.MobileSMS'),
-    app_button('com.google.Chrome'),
-    app_button('com.kapeli.dashdoc'),
-    app_button('com.tinyspeck.slackmacgap'),
+    app_button("com.apple.MobileSMS"),
+    app_button("com.google.Chrome"),
+    app_button("com.kapeli.dashdoc"),
+    app_button("com.tinyspeck.slackmacgap"),
   },
 
   -- Zoom Layer
@@ -112,7 +114,7 @@ local fullSizeLayers = {
     -- Row 1
     {
       image = images.imageFromText("🔉", "Mic Vol"),
-      press_callback = actions.reset_mic_volume
+      press_callback = actions.reset_mic_volume,
     },
     {
       image = images.imageFromText("⎚", "View"),
@@ -123,12 +125,15 @@ local fullSizeLayers = {
       press_callback = zoom_actions.toggle_full_screen,
     },
     {
-      image = images.imageWithLabel("zoom-participants.png", "Participants",
-        {scale=0.70}),
+      image = images.imageWithLabel(
+        "zoom-participants.png",
+        "Participants",
+        { scale = 0.70 }
+      ),
       press_callback = zoom_actions.show_participants,
     },
     {
-      image = images.imageWithLabel("zoom-chat.png", "Chat", {scale=0.70}),
+      image = images.imageWithLabel("zoom-chat.png", "Chat", { scale = 0.70 }),
       press_callback = zoom_actions.show_chat,
     },
     -- Row 2
@@ -144,33 +149,44 @@ local fullSizeLayers = {
       update_callback = status_callbacks.audio_device("laptop"),
     },
     {
-      image = images.imageWithLabel("zoom-share.png", "Share", {scale=0.70}),
+      image = images.imageWithLabel(
+        "zoom-share.png",
+        "Share",
+        { scale = 0.70 }
+      ),
       press_callback = zoom_actions.share_toggle,
     },
     {
       image = images.imageFromText("<", "Back"),
-      press_callback = streamdeck.changeLayerCallback('default')
+      press_callback = streamdeck.changeLayerCallback("default"),
     },
     -- Row 3
     {
       -- Shush
-      passthrough = 'default'
+      passthrough = "default",
     },
     {
       -- Shush toggle
-      passthrough = 'default'
+      passthrough = "default",
     },
     {
-      image = images.imageWithLabel("zoom-mic.png", "Mute", {scale=0.70}),
+      image = images.imageWithLabel("zoom-mic.png", "Mute", { scale = 0.70 }),
       press_callback = zoom_actions.audio_toggle,
     },
     {
-      image = images.imageWithLabel("zoom-camera.png", "Camera", {scale=0.70}),
+      image = images.imageWithLabel(
+        "zoom-camera.png",
+        "Camera",
+        { scale = 0.70 }
+      ),
       press_callback = zoom_actions.camera_toggle,
     },
     {
-      image = images.imageFromText("x", "Leave",
-        {textColor=hs.drawing.color.hammerspoon.osx_red}),
+      image = images.imageFromText(
+        "x",
+        "Leave",
+        { textColor = hs.drawing.color.hammerspoon.osx_red }
+      ),
       press_callback = zoom_actions.leave_meeting_no_prompt,
     },
   },
@@ -179,55 +195,64 @@ local fullSizeLayers = {
   teams = {
     -- Row 1
     {
-      passthrough = 'zoom'
+      passthrough = "zoom",
     },
-    { },
+    {},
     {
       image = images.imageFromText("⤢", "Full Screen"),
       press_callback = teams_actions.full_screen,
     },
-    {
-    },
-    {
-    },
+    {},
+    {},
     -- Row 2
     {
-      passthrough = 'zoom'
+      passthrough = "zoom",
     },
     {
-      passthrough = 'zoom'
+      passthrough = "zoom",
     },
     {
-      passthrough = 'zoom'
+      passthrough = "zoom",
     },
     {
-      image = images.imageWithLabel("zoom-share.png", "Share", {scale=0.70}),
+      image = images.imageWithLabel(
+        "zoom-share.png",
+        "Share",
+        { scale = 0.70 }
+      ),
       press_callback = teams_actions.share,
     },
     {
       image = images.imageFromText("<", "Back"),
-      press_callback = streamdeck.changeLayerCallback('default')
+      press_callback = streamdeck.changeLayerCallback("default"),
     },
     -- Row 3
     {
       -- Shush
-      passthrough = 'default'
+      passthrough = "default",
     },
     {
       -- Shush toggle
-      passthrough = 'default'
+      passthrough = "default",
     },
     {
-      image = images.imageWithLabel("zoom-mic.png", "Mic", {scale=0.70}),
+      image = images.imageWithLabel("zoom-mic.png", "Mic", { scale = 0.70 }),
       press_callback = teams_actions.mic,
     },
     {
-      image = images.imageWithLabel("zoom-camera.png", "Camera", {scale=0.70}),
+      image = images.imageWithLabel(
+        "zoom-camera.png",
+        "Camera",
+        { scale = 0.70 }
+      ),
       press_callback = teams_actions.camera,
     },
     {
-      image = images.imageFromText("x", "Leave",
-        {textColor=hs.drawing.color.hammerspoon.osx_red}),
+      image = images.imageFromText(
+        "x",
+        "Leave",
+        { textColor = hs.drawing.color.hammerspoon.osx_red }
+      ),
       press_callback = teams_actions.leave,
     },
   },
@@ -260,15 +285,15 @@ local miniLayers = {
   default = {
     -- Row 1
     {
-      image = images.imageFromText("<", "", {yoffset=0}),
-      press_callback = actions.keypress({"shift"}, ","),
+      image = images.imageFromText("<", "", { yoffset = 0 }),
+      press_callback = actions.keypress({ "shift" }, ","),
     },
     {
-      image = images.imageFromText(">", "", {yoffset=0}),
-      press_callback = actions.keypress({"shift"}, "."),
+      image = images.imageFromText(">", "", { yoffset = 0 }),
+      press_callback = actions.keypress({ "shift" }, "."),
     },
     {
-      image = images.imageFromText("🔒", "", {yoffset=0}),
+      image = images.imageFromText("🔒", "", { yoffset = 0 }),
       press_callback = actions.lock_screen,
     },
     -- Row 2
@@ -281,7 +306,7 @@ local miniLayers = {
       press_callback = actions.keypress({}, "RIGHT"),
     },
     {
-      image = images.imageFromText('⏯︎ '),
+      image = images.imageFromText("⏯︎ "),
       press_callback = actions.keypress({}, "K"),
     },
   },

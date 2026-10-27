@@ -23,7 +23,7 @@ end
 
 function zoom_actions.activate_zoom_window()
   local app = hs.application.find("zoom.us")
-  local windowTitles = {"Zoom Meeting", "Zoom Webinar"}
+  local windowTitles = { "Zoom Meeting", "Zoom Webinar" }
   if app then
     if not app:isFrontmost() then
       zoom_actions.logger.i("Activating zoom app")
@@ -42,7 +42,7 @@ end
 
 function zoom_actions.close_zoom_meeting_window()
   local app = hs.application.find("zoom.us")
-  local windowTitles = {"Zoom Meeting", "Zoom Webinar"}
+  local windowTitles = { "Zoom Meeting", "Zoom Webinar" }
   if app then
     for _, title in ipairs(windowTitles) do
       local window = app:findWindow(title)
@@ -59,20 +59,20 @@ function zoom_actions.audio_toggle()
     "Mute audio",
     "Mute Audio",
     "Unmute audio",
-    "Unmute Audio"
+    "Unmute Audio",
   })
 end
 
 function zoom_actions.camera_toggle()
-  zoom_actions.select_menu_items({"Stop video", "Start video"})
+  zoom_actions.select_menu_items({ "Stop video", "Start video" })
 end
 
 function zoom_actions.share_toggle()
-  zoom_actions.select_menu_items({"Start share", "Stop share"})
+  zoom_actions.select_menu_items({ "Start share", "Stop share" })
 end
 
 function zoom_actions.share_pause()
-  zoom_actions.select_menu_items({"Pause share", "Unpause share"})
+  zoom_actions.select_menu_items({ "Pause share", "Unpause share" })
 end
 
 function zoom_actions.show_participants()
@@ -85,19 +85,19 @@ function zoom_actions.show_participants()
 end
 
 function zoom_actions.show_chat()
-  zoom_actions.select_menu_items({"Show chat", "Close chat"})
+  zoom_actions.select_menu_items({ "Show chat", "Close chat" })
 end
 
 -- Try to leave a zoom meeting, and show any prompt that will come up
 function zoom_actions.leave_meeting_prompt()
-  zoom_actions.select_menu_items({{"Window", "Close"}})
+  zoom_actions.select_menu_items({ { "Window", "Close" } })
 end
 
 -- Leave a meeting and automatically confirm the prompt
 -- Note: this may end the meeting for all
 function zoom_actions.leave_meeting_no_prompt()
   -- Make sure the zoom window is active and that we aren't sharing the screen
-  zoom_actions.select_menu_items({"Stop Share"})
+  zoom_actions.select_menu_items({ "Stop Share" })
   zoom_actions.close_zoom_meeting_window()
   -- Click close, wait a bit, then press Enter to confirm
   hs.timer.doAfter(0.5, function()
@@ -108,18 +108,18 @@ end
 
 function zoom_actions.toggle_full_screen()
   zoom_actions.select_menu_items({
-    {"Meeting", "Fullscreen"},
-    {"Meeting", "Exit fullscreen"},
-    {"Window", "Enter Full Screen"},
-    {"Window", "Exit Full Screen"}
+    { "Meeting", "Fullscreen" },
+    { "Meeting", "Exit fullscreen" },
+    { "Window", "Enter Full Screen" },
+    { "Window", "Exit Full Screen" },
   })
 end
 
 function zoom_actions.toggle_view()
   zoom_actions.select_menu_items({
-    {"Meeting", "Gallery view"},
-    {"Meeting", "Multi-speaker view"},
-    {"Meeting", "Speaker view"}
+    { "Meeting", "Gallery view" },
+    { "Meeting", "Multi-speaker view" },
+    { "Meeting", "Speaker view" },
   })
 end
 

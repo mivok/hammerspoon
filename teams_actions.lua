@@ -3,14 +3,14 @@ local application_name = "Microsoft Teams"
 
 teams_actions.logger = hs.logger.new("teams_actions", "debug")
 
-function teams_shortcut(key)
-  app = hs.application.find("Microsoft Teams")
-  hs.eventtap.keyStroke({"cmd", "shift"}, key, 200000, app)
+local function teams_shortcut(key)
+  local app = hs.application.find(application_name)
+  hs.eventtap.keyStroke({ "cmd", "shift" }, key, 200000, app)
 end
 
 function teams_actions.full_screen()
-  app = hs.application.find("Microsoft Teams")
-  win = app:mainWindow()
+  local app = hs.application.find(application_name)
+  local win = app:mainWindow()
   win:setFullScreen(not win:isFullScreen())
 end
 

@@ -5,34 +5,36 @@ local actions = {}
 
 -- Pause key for music
 function actions.pause_music()
-    -- We can use media keys for spotify and chrome now, and it does the right
-    -- thing
-    hs.eventtap.event.newSystemKeyEvent("PLAY", true):post();
-    hs.eventtap.event.newSystemKeyEvent("PLAY", false):post();
+  -- We can use media keys for spotify and chrome now, and it does the right
+  -- thing
+  hs.eventtap.event.newSystemKeyEvent("PLAY", true):post()
+  hs.eventtap.event.newSystemKeyEvent("PLAY", false):post()
 end
 
 -- Lock screen
 function actions.sleep_screen()
-    hs.alert.show("Sleep screen")
-    hs.task.new("/usr/bin/pmset", nil, {"displaysleepnow"}):start()
+  hs.alert.show("Sleep screen")
+  hs.task.new("/usr/bin/pmset", nil, { "displaysleepnow" }):start()
 end
 
 function actions.lock_screen()
-    -- Mac lock screen shortcut
-    hs.alert.show("Lock screen")
-    hs.eventtap.keyStroke({"ctrl", "cmd"}, "q")
+  -- Mac lock screen shortcut
+  hs.alert.show("Lock screen")
+  hs.eventtap.keyStroke({ "ctrl", "cmd" }, "q")
 end
 
 function actions.reset_mic_volume()
-    level = 90
-    ad = hs.audiodevice.defaultInputDevice()
-    if ad ~= nil then
-        oldvol = math.floor(ad:inputVolume())
-        ad:setInputVolume(level)
-        hs.alert.show("Input volume reset from " .. oldvol .. "% to " .. level .. "%")
-    else
-        hs.alert.show("No input device found")
-    end
+  local level = 90
+  local ad = hs.audiodevice.defaultInputDevice()
+  if ad ~= nil then
+    local oldvol = math.floor(ad:inputVolume())
+    ad:setInputVolume(level)
+    hs.alert.show(
+      "Input volume reset from " .. oldvol .. "% to " .. level .. "%"
+    )
+  else
+    hs.alert.show("No input device found")
+  end
 end
 
 function actions.audio_device(preset_name)
@@ -51,62 +53,70 @@ function actions.toggle_application(bundleID)
   return function()
     local app = hs.application.get(bundleID)
     if app == nil then
-        hs.application.open(bundleID)
-        return
+      hs.application.open(bundleID)
+      return
     end
     if app:isRunning() then
-        if app:isFrontmost() then
-            app:hide()
-        else
-            hs.application.open(bundleID)
-            app:activate()
-        end
-    else
+      if app:isFrontmost() then
+        app:hide()
+      else
         hs.application.open(bundleID)
+        app:activate()
+      end
+    else
+      hs.application.open(bundleID)
     end
   end
 end
 
 function actions.saml2aws_login()
   hs.notify.show("Saml2aws login", "", "Running saml2aws", "")
-  hs.task.new('/opt/homebrew/bin/saml2aws', function(exitcode, stdout, stderr)
-    local msg = {}
-    if exitcode ~= 0 then
-      table.insert(msg, "ERROR: exit code " .. exitcode)
-    end
-    if stdout ~= "" then
-      table.insert(msg, (stdout:gsub("^%s*(.-)%s*$", "%1")))
-    end
-    if stderr ~= "" then
-      table.insert(msg, (stderr:gsub("^%s*(.-)%s*$", "%1")))
-    end
-    hs.notify.show("Saml2aws login", "", table.concat(msg, "\n\n"), "")
-  end, {'login', '--skip-prompt'}):start()
+  hs.task
+    .new("/opt/homebrew/bin/saml2aws", function(exitcode, stdout, stderr)
+      local msg = {}
+      if exitcode ~= 0 then
+        table.insert(msg, "ERROR: exit code " .. exitcode)
+      end
+      if stdout ~= "" then
+        table.insert(msg, (stdout:gsub("^%s*(.-)%s*$", "%1")))
+      end
+      if stderr ~= "" then
+        table.insert(msg, (stderr:gsub("^%s*(.-)%s*$", "%1")))
+      end
+      hs.notify.show("Saml2aws login", "", table.concat(msg, "\n\n"), "")
+    end, { "login", "--skip-prompt" })
+    :start()
 end
 
 function actions.aws_sso_login()
   hs.notify.show("AWS SSO login", "", "Running aws sso login", "")
-  hs.task.new('/opt/homebrew/bin/aws', function(exitcode, stdout, stderr)
-    local msg = {}
-    if exitcode ~= 0 then
-      table.insert(msg, "ERROR: exit code " .. exitcode)
-    end
-    if stdout ~= "" then
-      table.insert(msg, (stdout:gsub("^%s*(.-)%s*$", "%1")))
-    end
-    if stderr ~= "" then
-      table.insert(msg, (stderr:gsub("^%s*(.-)%s*$", "%1")))
-    end
-    local l = hs.logger.new("AWS login")
-    l.setLogLevel("info")
-    l.i(table.concat(msg, "\n\n"))
-    if exitcode == 0 then
-      hs.notify.show("AWS SSO login", "", "Login successful", "")
-    else
-      hs.notify.show("AWS SSO login", "",
-        "Login failed. See console logs for output.", "")
-    end
-  end, {'sso', 'login', '--profile', config.aws_sso_profile}):start()
+  hs.task
+    .new("/opt/homebrew/bin/aws", function(exitcode, stdout, stderr)
+      local msg = {}
+      if exitcode ~= 0 then
+        table.insert(msg, "ERROR: exit code " .. exitcode)
+      end
+      if stdout ~= "" then
+        table.insert(msg, (stdout:gsub("^%s*(.-)%s*$", "%1")))
+      end
+      if stderr ~= "" then
+        table.insert(msg, (stderr:gsub("^%s*(.-)%s*$", "%1")))
+      end
+      local l = hs.logger.new("AWS login")
+      l.setLogLevel("info")
+      l.i(table.concat(msg, "\n\n"))
+      if exitcode == 0 then
+        hs.notify.show("AWS SSO login", "", "Login successful", "")
+      else
+        hs.notify.show(
+          "AWS SSO login",
+          "",
+          "Login failed. See console logs for output.",
+          ""
+        )
+      end
+    end, { "sso", "login", "--profile", config.aws_sso_profile })
+    :start()
 end
 
 function actions.send_clipboard(machine)
@@ -122,8 +132,8 @@ function actions.send_clipboard(machine)
       -- but this is less error prone.
       contents = hs.base64.encode(hs.pasteboard.getContents())
     end
-    remote_code = [[
-      local contents = "]]..contents..[["
+    local remote_code = [[
+      local contents = "]] .. contents .. [["
       hs.pasteboard.writeObjects(hs.image.imageFromURL(contents) or
         hs.base64.decode(contents))
       hs.notify.show("Clipboard synced", "", "")
@@ -134,7 +144,7 @@ end
 
 function actions.get_clipboard(machine)
   return function()
-    remote_code = [[
+    local remote_code = [[
     local typesAvailable = hs.pasteboard.typesAvailable()
     local contents
     if typesAvailable.image then

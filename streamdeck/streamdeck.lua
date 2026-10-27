@@ -18,7 +18,7 @@ streamdeck.app_reconcile_delay = 0.1
 -- to change layers manually.
 function streamdeck.changeLayerCallback(layer)
   return function()
-    streamdeck.changeLayer(layer, {manual = true})
+    streamdeck.changeLayer(layer, { manual = true })
   end
 end
 
@@ -87,10 +87,8 @@ function streamdeck.buttonCallback(sd, button_number, pressed)
     return
   end
 
-  local button = streamdeck.buttonForLayer(
-    streamdeck.currentLayer,
-    button_number
-  )
+  local button =
+    streamdeck.buttonForLayer(streamdeck.currentLayer, button_number)
 
   if pressed and button.press_callback then
     button.press_callback()
@@ -175,7 +173,7 @@ function streamdeck.runUpdateCallbacks(reason)
 
   local sinceLast
   if lastStart then
-      sinceLast = (now - lastStart) / 1e6
+    sinceLast = (now - lastStart) / 1e6
   end
 
   lastStart = now
@@ -190,15 +188,19 @@ function streamdeck.runUpdateCallbacks(reason)
         local callback_start = hs.timer.absoluteTime()
         button:update_callback()
         local elapsed = (hs.timer.absoluteTime() - callback_start) / 1e6
-        log.df("[Button callback] layer=%-10s button=%-2s time=%4.0f ms",
-            layerid, idx, elapsed)
-        -- Update the button image it's visible and the image changed
-        local currentButton = streamdeck.rawButtonForLayer(
-          streamdeck.currentLayer,
-          idx
+        log.df(
+          "[Button callback] layer=%-10s button=%-2s time=%4.0f ms",
+          layerid,
+          idx,
+          elapsed
         )
-        if currentButton.passthrough == layerid
-          or layerid == streamdeck.currentLayer then
+        -- Update the button image it's visible and the image changed
+        local currentButton =
+          streamdeck.rawButtonForLayer(streamdeck.currentLayer, idx)
+        if
+          currentButton.passthrough == layerid
+          or layerid == streamdeck.currentLayer
+        then
           if button.status_image ~= old_status_image then
             streamdeck.updateButtonImage(idx, button)
           end
@@ -209,19 +211,21 @@ function streamdeck.runUpdateCallbacks(reason)
 
   local elapsed = (hs.timer.absoluteTime() - start) / 1e6
 
-  log.df("[updateStatusCallbacks] #%d (%-12s) duration=%.0f ms interval=%s ms",
-      updateCount,
-      reason,
-      elapsed,
-      sinceLast and string.format("%.0f ms", sinceLast) or "n/a"
+  log.df(
+    "[updateStatusCallbacks] #%d (%-12s) duration=%.0f ms interval=%s ms",
+    updateCount,
+    reason,
+    elapsed,
+    sinceLast and string.format("%.0f ms", sinceLast) or "n/a"
   )
 end
 
 -- Start the recurring status update timer for the active device.
 function streamdeck.setupUpdateTimer()
   streamdeck.cancelUpdateTimer()
-  streamdeck.update_timer = hs.timer.doEvery(5,
-    function() streamdeck.runUpdateCallbacks("timer") end)
+  streamdeck.update_timer = hs.timer.doEvery(5, function()
+    streamdeck.runUpdateCallbacks("timer")
+  end)
   -- Initial run
   streamdeck.runUpdateCallbacks("setup-update-timer-immediate")
 end
@@ -249,8 +253,9 @@ function streamdeck.updateStatusSoon()
     -- button over and over
     streamdeck.quick_update_timer:stop()
   end
-  streamdeck.quick_update_timer = hs.timer.doAfter(1,
-    function() streamdeck.runUpdateCallbacks("button-delayed") end)
+  streamdeck.quick_update_timer = hs.timer.doAfter(1, function()
+    streamdeck.runUpdateCallbacks("button-delayed")
+  end)
   -- Also try running the update callback immediately to get a more immediate
   -- response in the event the action is not slow
   streamdeck.runUpdateCallbacks("button-immediate")
@@ -279,7 +284,8 @@ function streamdeck.selectProfile(sd)
   streamdeck.currentLayout = layoutKey
   streamdeck.layers = profile.layers or profile
   local state = streamdeck.profileState(layoutKey)
-  streamdeck.currentLayer = state.lastManualLayer or profile.defaultLayer
+  streamdeck.currentLayer = state.lastManualLayer
+    or profile.defaultLayer
     or "default"
   log.i("Using Stream Deck layout: " .. layoutKey)
   return true
@@ -303,7 +309,7 @@ function streamdeck.applyAppLayer(state, appName, appLayer)
     return
   end
 
-  if streamdeck.changeLayer(appLayer, {manual = false}) then
+  if streamdeck.changeLayer(appLayer, { manual = false }) then
     state.activeAppName = appName
     state.manualOverrideAppName = nil
   else
@@ -314,9 +320,10 @@ end
 -- Restore the last manual layer after leaving app-specific layer mode.
 function streamdeck.restoreManualLayer(state)
   local profile = streamdeck.currentProfile()
-  local restoreLayer = state.lastManualLayer or profile.defaultLayer
+  local restoreLayer = state.lastManualLayer
+    or profile.defaultLayer
     or "default"
-  streamdeck.changeLayer(restoreLayer, {manual = false})
+  streamdeck.changeLayer(restoreLayer, { manual = false })
   state.activeAppName = nil
   state.manualOverrideAppName = nil
 end
@@ -345,9 +352,11 @@ function streamdeck.setupAppWatcher()
 
   streamdeck.appWatcher = hs.application.watcher.new(
     function(appName, eventType, app)
-      if eventType == hs.application.watcher.activated
+      if
+        eventType == hs.application.watcher.activated
         or eventType == hs.application.watcher.deactivated
-        or eventType == hs.application.watcher.terminated then
+        or eventType == hs.application.watcher.terminated
+      then
         streamdeck.scheduleAppLayerReconcile()
       end
     end
@@ -373,7 +382,7 @@ function streamdeck.deviceConnectedCallback(connected, sd)
     return
   end
 
-  streamdeck.changeLayer(streamdeck.currentLayer, {manual = false})
+  streamdeck.changeLayer(streamdeck.currentLayer, { manual = false })
   streamdeck.setupUpdateTimer()
   streamdeck.setupLockScreenMonitoring()
   streamdeck.setupAppWatcher()
@@ -389,7 +398,7 @@ function streamdeck.blankScreen()
 
   local cols, rows = streamdeck.device:buttonLayout()
   local numButtons = rows * cols
-  for idx = 1,numButtons do
+  for idx = 1, numButtons do
     streamdeck.device:setButtonColor(idx, hs.drawing.color.hammerspoon.black)
   end
 end
@@ -400,7 +409,7 @@ function streamdeck.updateScreenLocked(isLocked)
   if isLocked then
     streamdeck.blankScreen()
   else
-    streamdeck.changeLayer(streamdeck.currentLayer, {manual = false})
+    streamdeck.changeLayer(streamdeck.currentLayer, { manual = false })
     streamdeck.scheduleAppLayerReconcile()
   end
 end

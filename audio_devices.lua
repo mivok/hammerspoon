@@ -52,9 +52,10 @@ function audio_devices.is_active(name)
 
   local input_device = hs.audiodevice.defaultInputDevice()
   local output_device = hs.audiodevice.defaultOutputDevice()
-  return input_device ~= nil and output_device ~= nil and
-    input_device:name() == preset.input and
-    output_device:name() == preset.output
+  return input_device ~= nil
+    and output_device ~= nil
+    and input_device:name() == preset.input
+    and output_device:name() == preset.output
 end
 
 return audio_devices
