@@ -100,8 +100,9 @@ end
 
 -- Set up  push to talk key. Hold down to talk, release to mute. If double tap,
 -- toggle between push to talk and push to mute.
-function M.setupPTTHotkey(mods, key)
-  hs.hotkey.bind(mods, key,
+function M.setupPTTHotkey(mods, key, description)
+  description = description or "Hold to talk/mute; double-tap to toggle mode"
+  hs.hotkey.bind(mods, key, description,
     M.ptt_press,
     M.ptt_release
   )

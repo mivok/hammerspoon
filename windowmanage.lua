@@ -1,6 +1,8 @@
 -- Shortcut for binding the hyper key
-function hyper_bind(key, callback)
-    hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, key, callback)
+local function hyper_bind(key, description, callback)
+  return hs.hotkey.bind(
+    {"ctrl", "alt", "cmd", "shift"}, key, description, callback
+  )
 end
 
 -- Move the current window to the given values (unit rect values - between 0
@@ -27,22 +29,22 @@ function move_window(x, y, w, h, bottom_right)
 end
 
 -- Make window fill the width of the screen (for vertical monitor)
-hyper_bind("1", function()
-    move_window(0, nil, 1, nil)
+hyper_bind("1", "Make window fill screen width", function()
+  move_window(0, nil, 1, nil)
 end)
 
-hyper_bind("up", function()
-    move_window(nil, 0, nil, nil)
+hyper_bind("up", "Move window to top edge", function()
+  move_window(nil, 0, nil, nil)
 end)
 
-hyper_bind("left", function()
-    move_window(0, nil, nil, nil)
+hyper_bind("left", "Move window to left edge", function()
+  move_window(0, nil, nil, nil)
 end)
 
-hyper_bind("down", function()
-    move_window(nil, 1, nil, nil, true)
+hyper_bind("down", "Move window to bottom edge", function()
+  move_window(nil, 1, nil, nil, true)
 end)
 
-hyper_bind("right", function()
-    move_window(1, nil, nil, nil, true)
+hyper_bind("right", "Move window to right edge", function()
+  move_window(1, nil, nil, nil, true)
 end)
