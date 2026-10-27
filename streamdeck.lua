@@ -274,7 +274,7 @@ local miniLayers = {
     -- Row 2
     {
       image = images.imageFromText("⬅", ""),
-      press_callback = actions.keypress({""}, "LEFT"),
+      press_callback = actions.keypress({}, "LEFT"),
     },
     {
       image = images.imageFromText("⮕", ""),

@@ -41,41 +41,9 @@ function actions.audio_device(preset_name)
   end
 end
 
-function actions.keydown(modifiers, key)
-  return function()
-    hs.eventtap.event.newKeyEvent(modifiers, key, true):post()
-  end
-end
-
-function actions.keyup(modifiers, key)
-  return function()
-    hs.eventtap.event.newKeyEvent(modifiers, key, false):post()
-  end
-end
-
 function actions.keypress(modifiers, key)
   return function()
-    actions.keydown(modifiers, key)()
-    actions.keyup(modifiers, key)()
-  end
-end
-
-function actions.syskeydown(key)
-  return function()
-    hs.eventtap.event.newSystemKeyEvent(key, true):post()
-  end
-end
-
-function actions.syskeyup(key)
-  return function()
-    hs.eventtap.event.newSystemKeyEvent(key, false):post()
-  end
-end
-
-function actions.syskeypress(key)
-  return function()
-    actions.syskeydown(key)()
-    actions.syskeyup(key)()
+    hs.eventtap.keyStroke(modifiers, key)
   end
 end
 
@@ -139,21 +107,6 @@ function actions.aws_sso_login()
         "Login failed. See console logs for output.", "")
     end
   end, {'sso', 'login', '--profile', config.aws_sso_profile}):start()
-end
-
-function actions.on_machine(machine, callback)
-  -- Wrap a callback action that should be run on my personal machine
-  return function()
-    -- the () is added at the end here so the callback gets called when run
-    -- remotely, meaning you can just wrap an existing callback function in
-    -- this one to make it work remotely
-    rpc.run_on_machine(machine, callback .. "()")
-  end
-end
-
-function actions.remote_syskeypress(machine, key)
-  -- Press a system key (e.g. a media key) on the specified machine
-  return actions.on_machine(machine, 'actions.syskeypress("'..key..'")')
 end
 
 function actions.send_clipboard(machine)
